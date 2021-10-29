@@ -7,7 +7,7 @@ args = {
     'start_date': days_ago(1)
 }
  
-dag = DAG(dag_id = 'kaku', default_args=args, schedule_interval=None)
+dag = DAG(dag_id = 'geo_test', default_args=args, schedule_interval=None)
  
  
 def run_this_func():
