@@ -11,6 +11,7 @@ default_args = {
     'email_on_failure': True,
     'email_on_retry': 1,
     'retry_delay': timedelta(minutes=5)
+    'AIRFLOW__CORE__FERNET_KEY'= 'Y0ZCeE0wdFJZVFphTkVveE5IaFJjRGhrWmpCamJ6RlJhak5vZVZwclIxaz0='
 }
 
 dag = DAG('dag_insert_data_postgres', 
