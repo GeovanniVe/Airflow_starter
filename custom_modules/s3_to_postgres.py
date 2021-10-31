@@ -193,7 +193,6 @@ class S3ToPostgresOperator(BaseOperator):
                                   low_memory=False,
                                   dtype=schema)
         self.log.info('Downloading S3 file', df_products)
-        raise AirflowException('No key matches', df_products)
         
 #         file_name = 'debootcamp.products.sql'
 #         file_path = file_name
