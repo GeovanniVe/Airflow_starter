@@ -152,93 +152,94 @@ class S3ToPostgresOperator(BaseOperator):
     def execute(self, context) -> None:
         self.log.info('Starting execution')
         self.pg_hook = PostgresHook(postgres_conn_id=self.postgres_conn_id)
+        raise AirflowException('No key matches hook', self.pg_hook)
         self.s3 = S3Hook(aws_conn_id=self.aws_conn_id, verify=self.verify)
 
         self.log.info('Downloading S3 file')
 
-        if self.wildcard_match:
-            if self.s3.check_for_wildcard_key(self.s3_key, self.s3_bucket):
-                raise AirflowException('No key matches', self.s3_key)
-            s3_key_bucket = self.s3.get_wildcard_key(self.s3_key,
-                                                     self.s3_bucket)
-        else:
-            if not self.s3.check_for_key(self.s3_key, self.s3_bucket):
-                raise AirflowException("The key {0} does not exist".
-                                       format(self.s3_key))
+#         if self.wildcard_match:
+#             if self.s3.check_for_wildcard_key(self.s3_key, self.s3_bucket):
+#                 raise AirflowException('No key matches', self.s3_key)
+#             s3_key_bucket = self.s3.get_wildcard_key(self.s3_key,
+#                                                      self.s3_bucket)
+#         else:
+#             if not self.s3.check_for_key(self.s3_key, self.s3_bucket):
+#                 raise AirflowException("The key {0} does not exist".
+#                                        format(self.s3_key))
 
-        list_content = s3_key_bucket.get()['Body'].read()\
-                                    .decode(encoding='utf-8', errors='ignore')
+#         list_content = s3_key_bucket.get()['Body'].read()\
+#                                     .decode(encoding='utf-8', errors='ignore')
 
-        schema = {
-            'producto': 'string',
-            'presentacion': 'string',
-            'marca': 'string',
-            'categoria': 'string',
-            'precio': 'float64',
-            'cadenaComercial': 'string',
-            'giro': 'string',
-            'nombreComercial': 'string',
-            'direccion': 'string',
-            'estado': 'string',
-            'municipio': 'string',
-            'latitud': 'float64',
-            'longitud': 'float64'
-        }
+#         schema = {
+#             'producto': 'string',
+#             'presentacion': 'string',
+#             'marca': 'string',
+#             'categoria': 'string',
+#             'precio': 'float64',
+#             'cadenaComercial': 'string',
+#             'giro': 'string',
+#             'nombreComercial': 'string',
+#             'direccion': 'string',
+#             'estado': 'string',
+#             'municipio': 'string',
+#             'latitud': 'float64',
+#             'longitud': 'float64'
+#         }
 
-        date_cols = ['fechaRegistro']
+#         date_cols = ['fechaRegistro']
 
-        df_products = pd.read_csv(io.StringIO(list_content),
-                                  header=0,
-                                  delimiter=',',
-                                  low_memory=False,
-                                  dtype=schema)
+#         df_products = pd.read_csv(io.StringIO(list_content),
+#                                   header=0,
+#                                   delimiter=',',
+#                                   low_memory=False,
+#                                   dtype=schema)
 
-        file_name = 'debootcamp.products.sql'
-        file_path = file_name
+#         file_name = 'debootcamp.products.sql'
+#         file_path = file_name
 
-        with open(file_path, "r", encoding="UTF-8") as sql_file:
-            sql_create_table_cmd = sql_file.read()
-            sql_file.close()
+#         with open(file_path, "r", encoding="UTF-8") as sql_file:
+#             sql_create_table_cmd = sql_file.read()
+#             sql_file.close()
 
-            self.log.info(sql_create_table_cmd)
+#             self.log.info(sql_create_table_cmd)
 
-        self.pg_hook.run(sql_create_table_cmd)
+#         self.pg_hook.run(sql_create_table_cmd)
 
-        target_fields = ['producto', 'presentacion', 'marca', 'categoria',
-                         'precio', 'cadenaComercial', 'giro', 'nombreComercial',
-                         'direccion', 'estado', 'municipio', 'latitud',
-                         'longitud']
+#         target_fields = ['producto', 'presentacion', 'marca', 'categoria',
+#                          'precio', 'cadenaComercial', 'giro', 'nombreComercial',
+#                          'direccion', 'estado', 'municipio', 'latitud',
+#                          'longitud']
 
-        self.current_table = self.schema + '.' + self.table
-        self.pg_hook.insert_rows(self.current_table, list_content,
-                                 target_fields=target_fields, commit_every=1000,
-                                 replace=False)
-        self.request = 'SELECT * FROM ' + self.current_table
-        self.connection = self.pg_hook.get_conn()
-        self.cursor = self.connection.cursor()
-        self.cursor.execute(self.request)
-        self.source = self.cursor.fetchall()
+#         self.current_table = self.schema + '.' + self.table
+#         self.pg_hook.insert_rows(self.current_table, list_content,
+#                                  target_fields=target_fields, commit_every=1000,
+#                                  replace=False)
+#         self.request = 'SELECT * FROM ' + self.current_table
+#         self.connection = self.pg_hook.get_conn()
+#         self.cursor = self.connection.cursor()
+#         self.cursor.execute(self.request)
+#         self.source = self.cursor.fetchall()
 
-        for source in self.source:
-            self.log.info("producto: {0} - \
-                          presentacion: {1} - \
-                          marca: {2} - \
-                          categoria: {3} - \
-                          catalogo: {4} - \
-                          precio: {5} - \
-                          fechaRegistro: {6} - \
-                          cadenaComercial: {7} - \
-                          giro: {8} - \
-                          nombreComercial: {9} - \
-                          direccion: {10} - \
-                          estado: {11} - \
-                          municipio: {12} - \
-                          latitud: {13} - \
-                          longitud: {14} ".
-                          format(source[0], source[1], source[2], source[3],
-                                 source[4], source[5], source[6], source[7],
-                                 source[8], source[9], source[10], source[11],
-                                 source[12], source[13], source[14]))
+#         for source in self.source:
+#             self.log.info("producto: {0} - \
+#                           presentacion: {1} - \
+#                           marca: {2} - \
+#                           categoria: {3} - \
+#                           catalogo: {4} - \
+#                           precio: {5} - \
+#                           fechaRegistro: {6} - \
+#                           cadenaComercial: {7} - \
+#                           giro: {8} - \
+#                           nombreComercial: {9} - \
+#                           direccion: {10} - \
+#                           estado: {11} - \
+#                           municipio: {12} - \
+#                           latitud: {13} - \
+#                           longitud: {14} ".
+#                           format(source[0], source[1], source[2], source[3],
+#                                  source[4], source[5], source[6], source[7],
+#                                  source[8], source[9], source[10], source[11],
+#                                  source[12], source[13], source[14]))
 
 
 
