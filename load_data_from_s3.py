@@ -10,7 +10,7 @@ default_args = {
     'email': ['vgeovanni474@gmail.com'],
     'email_on_failure': True,
     'email_on_retry': 1,
-    'retry_delay': timedelta(minute=5)
+    'retry_delay': timedelta(minutes=5)
 }
 
 dag = DAG('dag_insert_data_postgres', 
