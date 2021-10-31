@@ -152,11 +152,11 @@ class S3ToPostgresOperator(BaseOperator):
     def execute(self, context) -> None:
         self.log.info('Starting execution')
         self.pg_hook = PostgresHook(postgres_conn_id=self.postgres_conn_id)
-        raise AirflowException('No key matches hook', self.pg_hook)
         self.s3 = S3Hook(aws_conn_id=self.aws_conn_id, verify=self.verify)
 
         self.log.info('Downloading S3 file')
-
+        raise AirflowException('No key matches hook', self.s3)
+        
 #         if self.wildcard_match:
 #             if self.s3.check_for_wildcard_key(self.s3_key, self.s3_bucket):
 #                 raise AirflowException('No key matches', self.s3_key)
