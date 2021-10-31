@@ -166,26 +166,26 @@ class S3ToPostgresOperator(BaseOperator):
                 raise AirflowException("The key {0} does not exist".
                                        format(self.s3_key))
 
-        list_content = s3_key_bucket.get()['Body'].read()\
-                                    .decode(encoding='utf-8', errors='ignore')
+#         list_content = s3_key_bucket.get()['Body'].read()\
+#                                     .decode(encoding='utf-8', errors='ignore')
 
-        schema = {
-            'producto': 'string',
-            'presentacion': 'string',
-            'marca': 'string',
-            'categoria': 'string',
-            'precio': 'float64',
-            'cadenaComercial': 'string',
-            'giro': 'string',
-            'nombreComercial': 'string',
-            'direccion': 'string',
-            'estado': 'string',
-            'municipio': 'string',
-            'latitud': 'float64',
-            'longitud': 'float64'
-        }
+#         schema = {
+#             'producto': 'string',
+#             'presentacion': 'string',
+#             'marca': 'string',
+#             'categoria': 'string',
+#             'precio': 'float64',
+#             'cadenaComercial': 'string',
+#             'giro': 'string',
+#             'nombreComercial': 'string',
+#             'direccion': 'string',
+#             'estado': 'string',
+#             'municipio': 'string',
+#             'latitud': 'float64',
+#             'longitud': 'float64'
+#         }
 
-        date_cols = ['fechaRegistro']
+#         date_cols = ['fechaRegistro']
 
 #         df_products = pd.read_csv(io.StringIO(list_content),
 #                                   header=0,
