@@ -193,7 +193,7 @@ class S3ToPostgresOperator(BaseOperator):
                                   dtype=schema)
 
         file_name = 'debootcamp.products.sql'
-        file_path = '/' + file_name
+        file_path = file_name
 
         with open(file_path, "r", encoding="UTF-8") as sql_file:
             sql_create_table_cmd = sql_file.read()
