@@ -119,7 +119,7 @@ class S3ToPostgresOperator(BaseOperator):
         self.s3 = S3Hook(aws_conn_id=self.aws_conn_id, verify=self.verify)
 
         self.log.info('Downloading S3 file')
-        
+        raise AirflowException('No key matches', self.s3_key)
         if self.wildcard_match:
             if self.s3.check_for_wildcard_key(self.s3_key, self.s3_bucket):
                 raise AirflowException('No key matches', self.s3_key)
@@ -129,6 +129,7 @@ class S3ToPostgresOperator(BaseOperator):
             if not self.s3.check_for_key(self.s3_key, self.s3_bucket):
                 raise AirflowException("The key {0} does not exist".
                                        format(self.s3_key))
+        
 
 #         list_content = s3_key_bucket.get()['Body'].read()\
 #                                     .decode(encoding='utf-8', errors='ignore')
