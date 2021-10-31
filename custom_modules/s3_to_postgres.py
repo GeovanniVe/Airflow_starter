@@ -119,45 +119,45 @@ class S3ToPostgresOperator(BaseOperator):
         self.s3 = S3Hook(aws_conn_id=self.aws_conn_id, verify=self.verify)
 
         self.log.info('Downloading S3 file', self.s3)
-#         raise AirflowException('No key matches', self.s3_key)
-#         if self.wildcard_match:
-#             if self.s3.check_for_wildcard_key(self.s3_key, self.s3_bucket):
-#                 raise AirflowException('No key matches', self.s3_key)
-#             s3_key_bucket = self.s3.get_wildcard_key(self.s3_key,
-#                                                      self.s3_bucket)
-#         else:
-#             if not self.s3.check_for_key(self.s3_key, self.s3_bucket):
-#                 raise AirflowException("The key {0} does not exist".
-#                                        format(self.s3_key))
+        raise AirflowException('No key matches', self.s3_key)
+        if self.wildcard_match:
+            if self.s3.check_for_wildcard_key(self.s3_key, self.s3_bucket):
+                raise AirflowException('No key matches', self.s3_key)
+            s3_key_bucket = self.s3.get_wildcard_key(self.s3_key,
+                                                     self.s3_bucket)
+        else:
+            if not self.s3.check_for_key(self.s3_key, self.s3_bucket):
+                raise AirflowException("The key {0} does not exist".
+                                       format(self.s3_key))
         
 
-#         list_content = s3_key_bucket.get()['Body'].read()\
-#                                     .decode(encoding='utf-8', errors='ignore')
+        list_content = s3_key_bucket.get()['Body'].read()\
+                                    .decode(encoding='utf-8', errors='ignore')
 
-#         schema = {
-#             'producto': 'string',
-#             'presentacion': 'string',
-#             'marca': 'string',
-#             'categoria': 'string',
-#             'precio': 'float64',
-#             'cadenaComercial': 'string',
-#             'giro': 'string',
-#             'nombreComercial': 'string',
-#             'direccion': 'string',
-#             'estado': 'string',
-#             'municipio': 'string',
-#             'latitud': 'float64',
-#             'longitud': 'float64'
-#         }
+        schema = {
+            'producto': 'string',
+            'presentacion': 'string',
+            'marca': 'string',
+            'categoria': 'string',
+            'precio': 'float64',
+            'cadenaComercial': 'string',
+            'giro': 'string',
+            'nombreComercial': 'string',
+            'direccion': 'string',
+            'estado': 'string',
+            'municipio': 'string',
+            'latitud': 'float64',
+            'longitud': 'float64'
+        }
 
-#         date_cols = ['fechaRegistro']
+        date_cols = ['fechaRegistro']
 
-#         df_products = pd.read_csv(io.StringIO(list_content),
-#                                   header=0,
-#                                   delimiter=',',
-#                                   low_memory=False,
-#                                   dtype=schema)
-#         self.log.info('Downloading S3 file', df_products)
+        df_products = pd.read_csv(io.StringIO(list_content),
+                                  header=0,
+                                  delimiter=',',
+                                  low_memory=False,
+                                  dtype=schema)
+        self.log.info('Downloading S3 file', df_products)
         
 #         file_name = 'debootcamp.products.sql'
 #         file_path = file_name
