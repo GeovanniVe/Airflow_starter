@@ -187,12 +187,12 @@ class S3ToPostgresOperator(BaseOperator):
 
         date_cols = ['fechaRegistro']
 
-        df_products = pd.read_csv(io.StringIO(list_content),
-                                  header=0,
-                                  delimiter=',',
-                                  low_memory=False,
-                                  dtype=schema)
-        self.log.info('Downloading S3 file', df_products)
+#         df_products = pd.read_csv(io.StringIO(list_content),
+#                                   header=0,
+#                                   delimiter=',',
+#                                   low_memory=False,
+#                                   dtype=schema)
+#         self.log.info('Downloading S3 file', df_products)
         
 #         file_name = 'debootcamp.products.sql'
 #         file_path = file_name
