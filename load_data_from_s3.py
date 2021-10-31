@@ -7,9 +7,6 @@ default_args = {
     'owner': 'geovanni.velazquez',
     'depends_on_past': False,
     'start_date': airflow.utils.dates.days_ago(1),
-    'email': ['vgeovanni474@gmail.com'],
-    'email_on_failure': False,
-    'email_on_retry': 1,
     'retry_delay': timedelta(minutes=5)
 }
 
