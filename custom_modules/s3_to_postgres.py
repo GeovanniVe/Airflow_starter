@@ -10,8 +10,6 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 import pandas as pd
 import io
 import os.path
-from cryptography.fernet import Fernet
-import os
 
 AVAILABLE_METHODS = ['APPEND', 'REPLACE', 'UPSERT']
 
@@ -121,9 +119,6 @@ class S3ToPostgresOperator(BaseOperator):
         self.s3 = S3Hook(aws_conn_id=self.aws_conn_id, verify=self.verify)
 
         self.log.info('Downloading S3 file', self.s3)
-        
-        fernet_key = Fernet.generate_key()
-#         os.environ["AIRFLOW__CORE__FERNET_KEY"] = fernet_key.decode()
         
         if self.wildcard_match:
             if self.s3.check_for_wildcard_key(self.s3_key, self.s3_bucket):
