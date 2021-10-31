@@ -8,7 +8,6 @@ default_args = {
     'depends_on_past': False,
     'start_date': airflow.utils.dates.days_ago(1),
     'retry_delay': timedelta(minutes=5)
-    'fernet_key': 'Y0ZCeE0wdFJZVFphTkVveE5IaFJjRGhrWmpCamJ6RlJhak5vZVZwclIxaz0='
 }
 
 dag = DAG('dag_insert_data_postgres', 
