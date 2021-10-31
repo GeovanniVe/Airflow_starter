@@ -150,6 +150,7 @@ class S3ToPostgresOperator(BaseOperator):
         return [row[0] for row in result]
 
     def execute(self, context) -> None:
+        self.log.info('Starting execution')
         self.pg_hook = PostgresHook(postgres_conn_id=self.postgres_conn_id)
         self.s3 = S3Hook(aws_conn_id=self.aws_conn_id, verify=self.verify)
 
