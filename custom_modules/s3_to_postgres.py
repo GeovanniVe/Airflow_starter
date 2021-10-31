@@ -113,42 +113,6 @@ class S3ToPostgresOperator(BaseOperator):
             raise AirflowException(f'Method not found! Available methods: '
                                    f'{AVAILABLE_METHODS}')
 
-    def _build_copy_query(self, copy_destination: str,
-                          credentials_block: str, copy_options: str) -> str:
-        column_names = "(" + ", ".join(self.column_list) + ")" \
-                       if self.column_list else ''
-        return f"""
-                    COPY {copy_destination} {column_names}
-                    FROM 's3://{self.s3_bucket}/{self.s3_key}'
-                    credentials
-                    '{credentials_block}'
-                    {copy_options};
-        """
-
-    def _get_table_primary_key(self, postgres_hook):
-        sql = """
-            select kcu.column_name
-            from information_schema.table_constraints tco
-                    join information_schema.key_column_usage kcu
-                        on kcu.constraint_name = tco.constraint_name
-                            and kcu.constraint_schema = tco.constraint_schema
-                            and kcu.constraint_name = tco.constraint_name
-            where tco.constraint_type = 'PRIMARY KEY'
-            and kcu.table_schema = %s
-            and kcu.table_name = %s
-        """
-
-        result = postgres_hook.get_records(sql, (self.schema, self.table))
-
-        if len(result) == 0:
-            raise AirflowException(
-                f"""
-                No primary key on {self.schema}.{self.table}.
-                Please provide keys on 'upsert_keys' parameter.
-                """
-            )
-        return [row[0] for row in result]
-
     def execute(self, context) -> None:
         self.log.info('Starting execution')
         self.pg_hook = PostgresHook(postgres_conn_id=self.postgres_conn_id)
