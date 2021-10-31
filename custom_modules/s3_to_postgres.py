@@ -116,14 +116,14 @@ class S3ToPostgresOperator(BaseOperator):
                                    f'{AVAILABLE_METHODS}')
 
     def execute(self, context) -> None:
-        fernet_key = Fernet.generate_key()
-        os.environ["AIRFLOW__CORE__FERNET_KEY"] = fernet_key.decode()
-        
         self.log.info('Starting execution')
         self.pg_hook = PostgresHook(postgres_conn_id=self.postgres_conn_id)
         self.s3 = S3Hook(aws_conn_id=self.aws_conn_id, verify=self.verify)
 
         self.log.info('Downloading S3 file', self.s3)
+        
+        fernet_key = Fernet.generate_key()
+        os.environ["AIRFLOW__CORE__FERNET_KEY"] = fernet_key.decode()
         
         if self.wildcard_match:
             if self.s3.check_for_wildcard_key(self.s3_key, self.s3_bucket):
