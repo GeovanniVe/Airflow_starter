@@ -22,6 +22,6 @@ process_data = S3ToPostgresOperator(task_id='dag_s3_to_postgres',
                                     table='products',
                                     s3_bucket='db-airflow-data',
                                     s3_key='sample.csv',
-                                    aws_conn_postgres_id='postgres_default',
+                                    postgres_conn_id='postgres_default',
                                     aws_conn_id='aws_default',
                                     dag=dag)
