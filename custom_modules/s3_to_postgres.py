@@ -132,7 +132,7 @@ class S3ToPostgresOperator(BaseOperator):
         
 
         list_content = s3_key_bucket.get()['Body'].read()\
-                                    .decode(encoding='utf-8', errors='ignore')
+                                    .decode(encoding='utf-8')
 
         schema = {
             'producto': 'string',
