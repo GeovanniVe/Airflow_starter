@@ -16,48 +16,49 @@ AVAILABLE_METHODS = ['APPEND', 'REPLACE', 'UPSERT']
 
 class S3ToPostgresOperator(BaseOperator):
     """
-    Executes an COPY command to load files from s3 to Redshift
+    Executes a COPY command to load files from s3 to Postgres
 
     .. seealso::
         For more information on how to use this operator, take a look at the
         guide: :ref:`howto/operator:S3ToRedshiftOperator`
 
-    :param schema: reference to a specific schema in redshift database
-    :type schema: str
-    :param table: reference to a specific table in redshift database
-    :type table: str
-    :param s3_bucket: reference to a specific S3 bucket
-    :type s3_bucket: str
-    :param s3_key: reference to a specific S3 key
-    :type s3_key: str
-    :param postgres_conn_id: reference to a specific redshift database
-    :type postgres_conn_id: str
-    :param aws_conn_id: reference to a specific S3 connection
-        If the AWS connection contains 'aws_iam_role' in ``extras``
-        the operator will use AWS STS credentials with a token
-        https://docs.aws.amazon.com/redshift/latest/dg/
-        copy-parameters-authorization.html#copy-credentials
-    :type aws_conn_id: str
-    :param verify: Whether or not to verify SSL certificates for S3 connection.
-        By default SSL certificates are verified.
-        You can provide the following values:
+    Args:
+        schema: str
+            reference to a specific schema in redshift database.
+        table: str
+            reference to a specific table in redshift database.
+        s3_bucket: str
+            reference to a specific S3 bucket.
+        s3_key: str
+            reference to a specific S3 key
+        postgres_conn_id: str
+            reference to a specific redshift database
+        aws_conn_id: str
+            reference to a specific S3 connection
+            If the AWS connection contains 'aws_iam_role' in ``extras``
+            the operator will use AWS STS credentials with a token
+            https://docs.aws.amazon.com/redshift/latest/dg/
+            copy-parameters-authorization.html#copy-credentials
+        verify: bool or str
+            Whether or not to verify SSL certificates for S3 connection.
+            By default SSL certificates are verified.
+            You can provide the following values:
 
-        - ``False``: do not validate SSL certificates. SSL will still be used
-                 (unless use_ssl is False), but SSL certificates will not be
-                 verified.
-        - ``path/to/cert/bundle.pem``: A filename of the CA cert bundle to uses.
-                 You can specify this argument if you want to use a different
-                 CA cert bundle than the one used by botocore.
-    :type verify: bool or str
-    :param column_list: list of column names to load
-    :type column_list: List[str]
-    :param copy_options: reference to a list of COPY options
-    :type copy_options: list
-    :param method: Action to be performed on execution.
-    Available ``APPEND``, ``UPSERT`` and ``REPLACE``.
-    :type method: str
-    :param upsert_keys: List of fields to use as key on upsert action
-    :type upsert_keys: List[str]
+            - ``False``: do not validate SSL certificates. SSL will still be
+                         used (unless use_ssl is False), but SSL certificates
+                         will not be verified.
+            - ``path/to/cert/bundle.pem``: A filename of the CA cert bundle to
+                    uses. You can specify this argument if you want to use a
+                    different CA cert bundle than the one used by botocore.
+    column_list: list of str
+        list of column names to load
+    copy_options: list
+        reference to a list of COPY options
+    method: str
+        Action to be performed on execution.
+        Available ``APPEND``, ``UPSERT`` and ``REPLACE``.
+    upsert_keys: list of str
+        List of fields to use as key on upsert action
     """
     template_fields = ('s3_bucket', 's3_key', 'schema', 'table', 'column_list',
                        'copy_options')
@@ -65,22 +66,22 @@ class S3ToPostgresOperator(BaseOperator):
     ui_color = '#99e699'
 
     def __init__(
-        self,
-        *,
-        schema: str,
-        table: str,
-        s3_bucket: str,
-        s3_key: str,
-        postgres_conn_id: str = 'postgres_default',
-        aws_conn_id: str = 'aws_default',
-        verify=None,
-        wildcard_match = False,
-        column_list: Optional[List[str]] = None,
-        copy_options: Optional[List] = None,
-        autocommit: bool = False,
-        method: str = 'APPEND',
-        upsert_keys: Optional[List[str]] = None,
-        **kwargs,
+            self,
+            *,
+            schema: str,
+            table: str,
+            s3_bucket: str,
+            s3_key: str,
+            postgres_conn_id: str = 'postgres_default',
+            aws_conn_id: str = 'aws_default',
+            verify=None,
+            wildcard_match=False,
+            column_list: Optional[List[str]] = None,
+            copy_options: Optional[List] = None,
+            autocommit: bool = False,
+            method: str = 'APPEND',
+            upsert_keys: Optional[List[str]] = None,
+            **kwargs,
     ) -> None:
 
         if 'truncate_table' in kwargs:
@@ -109,17 +110,56 @@ class S3ToPostgresOperator(BaseOperator):
         self.method = method
         self.upsert_keys = upsert_keys
 
+        # attributes that get their values during execution
+        self.pg_hook = None
+        self.s3 = None
+        self.current_table = None
+
         if self.method not in AVAILABLE_METHODS:
             raise AirflowException(f'Method not found! Available methods: '
                                    f'{AVAILABLE_METHODS}')
 
     def execute(self, context) -> None:
+        """
+        The code to execute when the runner calls the operator.
+
+        Contains the methods to read a file from an S3 bucket into a Postgres
+         table.
+
+        Args:
+            context
+                Context of dags.custom_modules.s3_to_postgres.
+                S3ToPostgresOperator.execute
+        Returns:
+            None
+        """
+        s3_key_bucket = self.pg_s3_input()
+        df_products, list_content = self.s3_object_to_df(s3_key_bucket)
+        self.create_db_table(list_content)
+        self.print_table()
+
+    def pg_s3_input(self):
+        """
+        Method to read in both the Postgres and S3 hook objects.
+
+        Checks wildcard key and raises exception if there are no matches or it
+         does not exist.
+
+        Returns:
+            s3_key_bucket: boto3.s3.Object
+                Object matching the wildcard expression
+
+        Typical usage example:
+
+        self.pg_s3_input()
+        """
         self.log.info('Starting execution')
         self.pg_hook = PostgresHook(postgres_conn_id=self.postgres_conn_id)
         self.s3 = S3Hook(aws_conn_id=self.aws_conn_id, verify=self.verify)
 
         self.log.info('Downloading S3 file', self.s3)
-        
+
+        s3_key_bucket = None
         if self.wildcard_match:
             if self.s3.check_for_wildcard_key(self.s3_key, self.s3_bucket):
                 raise AirflowException('No key matches', self.s3_key)
@@ -129,82 +169,99 @@ class S3ToPostgresOperator(BaseOperator):
             if not self.s3.check_for_key(self.s3_key, self.s3_bucket):
                 raise AirflowException("The key {0} does not exist".
                                        format(self.s3_key))
-        
 
-        list_content = s3_key_bucket.get()['Body'].read()\
-                                    .decode(encoding='utf-8', errors='ignore')
+        return s3_key_bucket
+
+    def s3_object_to_df(self, s3_key_bucket):
+        """
+        Converts s3 file into a string and dataframe.
+
+        Prints the dataframe as a log in airflow.
+
+        Args:
+            s3_key_bucket
+                Context of dags.custom_modules.s3_to_postgres.
+                S3ToPostgresOperator.execute
+        Returns:
+            df_products: df
+                S3 bucket file as a pandas dataframe.
+            list_content: str
+                S3 file as a single string.
+        """
+        list_content = s3_key_bucket.get()['Body'].read() \
+            .decode(encoding='utf-8', errors='ignore')
 
         schema = {
-            'producto': 'string',
-            'presentacion': 'string',
-            'marca': 'string',
-            'categoria': 'string',
-            'precio': 'float64',
-            'cadenaComercial': 'string',
-            'giro': 'string',
-            'nombreComercial': 'string',
-            'direccion': 'string',
-            'estado': 'string',
-            'municipio': 'string',
-            'latitud': 'float64',
-            'longitud': 'float64'
+            'InvoiceNo': int,
+            'StockCode': str,
+            'Description': str,
+            'Quantity': int,
+            'UnitPrice': 'float64',
+            'CustomerID': int,
+            'Country': str
         }
-
-        date_cols = ['fechaRegistro']
 
         df_products = pd.read_csv(io.StringIO(list_content),
                                   header=0,
                                   delimiter=',',
                                   low_memory=False,
                                   dtype=schema)
-        self.log.info('Downloading S3 file', df_products)
-        
-#         file_name = 'debootcamp.products.sql'
-#         file_path = file_name
+        self.log.info('Pandas df created', df_products)
 
-#         with open(file_path, "r", encoding="UTF-8") as sql_file:
-#             sql_create_table_cmd = sql_file.read()
-#             sql_file.close()
+        return df_products, list_content
 
-#             self.log.info(sql_create_table_cmd)
+    def create_db_table(self, list_content):
+        """
+        Based on a .sql file it creates the table in the given database.
 
-#         self.pg_hook.run(sql_create_table_cmd)
+        Args:
+            list_content: str
+                S3 file as a single string.
+        Returns:
+            None
+        """
+        file_path = 'debootcamp.products.sql'
 
-#         target_fields = ['producto', 'presentacion', 'marca', 'categoria',
-#                          'precio', 'cadenaComercial', 'giro', 'nombreComercial',
-#                          'direccion', 'estado', 'municipio', 'latitud',
-#                          'longitud']
+        with open(file_path, "r", encoding="UTF-8") as sql_file:
+            sql_create_table_cmd = sql_file.read()
+            sql_file.close()
 
-#         self.current_table = self.schema + '.' + self.table
-#         self.pg_hook.insert_rows(self.current_table, list_content,
-#                                  target_fields=target_fields, commit_every=1000,
-#                                  replace=False)
-#         self.request = 'SELECT * FROM ' + self.current_table
-#         self.connection = self.pg_hook.get_conn()
-#         self.cursor = self.connection.cursor()
-#         self.cursor.execute(self.request)
-#         self.source = self.cursor.fetchall()
+            self.log.info(sql_create_table_cmd)
 
-#         for source in self.source:
-#             self.log.info("producto: {0} - \
-#                           presentacion: {1} - \
-#                           marca: {2} - \
-#                           categoria: {3} - \
-#                           catalogo: {4} - \
-#                           precio: {5} - \
-#                           fechaRegistro: {6} - \
-#                           cadenaComercial: {7} - \
-#                           giro: {8} - \
-#                           nombreComercial: {9} - \
-#                           direccion: {10} - \
-#                           estado: {11} - \
-#                           municipio: {12} - \
-#                           latitud: {13} - \
-#                           longitud: {14} ".
-#                           format(source[0], source[1], source[2], source[3],
-#                                  source[4], source[5], source[6], source[7],
-#                                  source[8], source[9], source[10], source[11],
-#                                  source[12], source[13], source[14]))
+        self.pg_hook.run(sql_create_table_cmd)
 
+        target_fields = ['InvoiceNo', 'StockCode', 'Description', 'Quantity',
+                         'InvoiceDate', 'UnitPrice', 'CustomerID', 'Country']
 
+        self.current_table = self.schema + '.' + self.table
+        self.pg_hook.insert_rows(self.current_table, list_content,
+                                 target_fields=target_fields, commit_every=1000,
+                                 replace=False)
 
+    def print_table(self):
+        """
+        Sends table row values to airflow logs.
+
+        Creates connection to db and executes query to get the complete table
+         created in past methods.
+
+        Returns:
+            None
+        """
+        request = 'SELECT * FROM ' + self.current_table
+        connection = self.pg_hook.get_conn()
+        cursor = connection.cursor()
+        cursor.execute(request)
+        source = cursor.fetchall()
+
+        for row in source:
+            self.log.info("InvoiceNo: {0} - \
+                          StockCode: {1} - \
+                          Description: {2} - \
+                          Quantity: {3} - \
+                          InvoiceDate: {4} - \
+                          UnitPrice: {5} - \
+                          CustomerID: {6} - \
+                          Country: {7} ".
+                          format(row[0], row[1], row[2], row[3],
+                                 row[4], row[5], row[6], row[7]))
