@@ -75,7 +75,7 @@ class S3ToPostgresOperator(BaseOperator):
             postgres_conn_id: str = 'postgres_default',
             aws_conn_id: str = 'aws_default',
             verify=None,
-            wildcard_match=False,
+            wildcard_match=True,
             column_list: Optional[List[str]] = None,
             copy_options: Optional[List] = None,
             autocommit: bool = False,
