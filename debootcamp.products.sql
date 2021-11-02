@@ -2,7 +2,7 @@
 
 CREATE SCHEMA IF NOT EXISTS debootcamp;
 
-DROP TABLE debootcamp.products;
+DROP TABLE IF EXISTS debootcamp.products;
 
 CREATE TABLE IF NOT EXISTS debootcamp.products
 (
