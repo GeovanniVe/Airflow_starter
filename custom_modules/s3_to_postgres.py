@@ -195,7 +195,7 @@ class S3ToPostgresOperator(BaseOperator):
             .decode(encoding='utf-8', errors='ignore')
 
         schema = {
-            'InvoiceNo': int,
+            'InvoiceNo': str,
             'StockCode': str,
             'Description': str,
             'Quantity': int,
