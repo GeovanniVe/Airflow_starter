@@ -223,7 +223,7 @@ class S3ToPostgresOperator(BaseOperator):
         Returns:
             None
         """
-        file_path = 'debootcamp.products.sql'
+        file_path = 'dags/repo/debootcamp.products.sql'
 
         
         self.log.info("all content", os.listdir())
