@@ -169,6 +169,8 @@ class S3ToPostgresOperator(BaseOperator):
             if not self.s3.check_for_key(self.s3_key, self.s3_bucket):
                 raise AirflowException("The key {0} does not exist".
                                        format(self.s3_key))
+           s3_key_bucket = self.s3.get_wildcard_key(self.s3_key,
+                                                    self.s3_bucket)
 
         return s3_key_bucket
 
