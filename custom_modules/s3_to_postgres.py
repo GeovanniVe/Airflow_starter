@@ -135,7 +135,7 @@ class S3ToPostgresOperator(BaseOperator):
         """
         s3_key_bucket = self.pg_s3_input()
         df_products, list_content = self.s3_object_to_df(s3_key_bucket)
-        self.create_db_table(df_products)
+        self.create_db_table(list_content)
 #         self.print_table()
 
     def pg_s3_input(self):
@@ -204,7 +204,7 @@ class S3ToPostgresOperator(BaseOperator):
             'CustomerID': 'float64',
             'Country': str
         }
-        self.log.info('list_content success!!!')
+        self.log.info('list_content success!!!', list_content)
         df_products = pd.read_csv(io.StringIO(list_content),
                                   header=0,
                                   delimiter=',',
