@@ -188,6 +188,7 @@ class S3ToPostgresOperator(BaseOperator):
             list_content: str
                 S3 file as a single string.
         """
+        self.log.info('s3_key_bucket', s3_key_bucket)
         list_content = s3_key_bucket.get()['Body'].read() \
             .decode(encoding='utf-8', errors='ignore')
 
