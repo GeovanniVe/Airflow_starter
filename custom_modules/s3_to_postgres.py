@@ -226,10 +226,7 @@ class S3ToPostgresOperator(BaseOperator):
         file_path = 'debootcamp.products.sql'
 
         
-        for r, d, f in os.walk(dir):
-            self.log.info(r)
-            self.log.info(d)
-            self.log.info(f)
+        self.log.info("all content", os.listdir())
             
         with open(file_path, "r", encoding="UTF-8") as sql_file:
             sql_create_table_cmd = sql_file.read()
