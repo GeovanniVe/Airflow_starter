@@ -200,13 +200,13 @@ class S3ToPostgresOperator(BaseOperator):
             'CustomerID': int,
             'Country': str
         }
-
-        df_products = pd.read_csv(io.StringIO(list_content),
-                                  header=0,
-                                  delimiter=',',
-                                  low_memory=False,
-                                  dtype=schema)
-        self.log.info('Pandas df created', df_products)
+        self.log.info('list_content success!!!')
+#         df_products = pd.read_csv(io.StringIO(list_content),
+#                                   header=0,
+#                                   delimiter=',',
+#                                   low_memory=False,
+#                                   dtype=schema)
+#         self.log.info('Pandas df created', df_products)
 
         return df_products, list_content
 
