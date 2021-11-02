@@ -200,7 +200,7 @@ class S3ToPostgresOperator(BaseOperator):
             'Description': str,
             'Quantity': int,
             'UnitPrice': 'float64',
-            'CustomerID': int,
+            'CustomerID': 'float64',
             'Country': str
         }
         self.log.info('list_content success!!!')
