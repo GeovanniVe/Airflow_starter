@@ -1,5 +1,7 @@
 -- Table: debootcamp.products
 
+CREATE SCHEMA IF NOT EXISTS debootcamp;
+
 DROP TABLE debootcamp.products;
 
 CREATE TABLE IF NOT EXISTS debootcamp.products
