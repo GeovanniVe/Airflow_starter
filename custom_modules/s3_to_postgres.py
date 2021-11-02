@@ -199,7 +199,7 @@ class S3ToPostgresOperator(BaseOperator):
             'StockCode': str,
             'Description': str,
             'Quantity': int,
-            'InvoiceDate': 'datetime64[ns]',
+            'InvoiceDate': str,
             'UnitPrice': 'float64',
             'CustomerID': 'float64',
             'Country': str
