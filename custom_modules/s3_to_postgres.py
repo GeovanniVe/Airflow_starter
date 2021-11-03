@@ -7,6 +7,7 @@ from airflow.models import BaseOperator
 from airflow.providers.amazon.aws.hooks.s3 import S3Hook
 from airflow.providers.amazon.aws.utils.redshift import build_credentials_block
 from airflow.providers.postgres.hooks.postgres import PostgresHook
+from airflow.contrib.operators.s3_list_operator import S3ListOperator
 import pandas as pd
 import io
 import os.path
@@ -192,6 +193,8 @@ class S3ToPostgresOperator(BaseOperator):
                 S3 file as a single string.
         """
         self.log.info('s3_key_bucket', s3_key_bucket)
+        self.log.info('all buckets', S3ListOperator(bucket=self.s3_bucket, 
+                                                    prefix='s3-Data-bootcamp-'))
         list_content = s3_key_bucket.get()['Body'].read() \
             .decode(encoding='utf-8', errors='ignore')
 
