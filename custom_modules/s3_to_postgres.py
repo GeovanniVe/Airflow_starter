@@ -211,8 +211,8 @@ class S3ToPostgresOperator(BaseOperator):
                                   delimiter=',',
                                   low_memory=False,
                                   dtype=schema)
-#         df_products.replace(r'^\s*$', np.nan, regex=True, inplace=True)
-#         df_products.fillna(np.nan).replace([np.nan], [None])
+        df_products.replace(r'^\s*$', np.nan, regex=True, inplace=True)
+        df_products['CustomerID'] = df_products['CustomerID'].fillna(np.nan)
         df_products.dropna(inplace=True)
         return df_products, list_content
 
@@ -243,7 +243,8 @@ class S3ToPostgresOperator(BaseOperator):
                          'InvoiceDate', 'UnitPrice', 'CustomerID', 'Country']
 
         self.current_table = self.schema + '.' + self.table
-        self.pg_hook.insert_rows(self.current_table, [tuple(x) for x in df_products.to_numpy()],
+        df_row_list = [tuple(x) for x in df_products.to_numpy()]
+        self.pg_hook.insert_rows(self.current_table, df_row_list,
                                  target_fields=target_fields, commit_every=1000,
                                  replace=False)
 
