@@ -210,6 +210,7 @@ class S3ToPostgresOperator(BaseOperator):
                                   delimiter=',',
                                   low_memory=False,
                                   dtype=schema)
+        df_products.fillna(value='NULL', inplace=True)
         self.log.info('Pandas df created', df_products)
 
         return df_products, list_content
