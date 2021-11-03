@@ -10,6 +10,7 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 import pandas as pd
 import io
 import os.path
+import numpy as np
 
 AVAILABLE_METHODS = ['APPEND', 'REPLACE', 'UPSERT']
 
