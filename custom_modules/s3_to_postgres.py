@@ -211,8 +211,9 @@ class S3ToPostgresOperator(BaseOperator):
                                   delimiter=',',
                                   low_memory=False,
                                   dtype=schema)
-        df_products.replace(r'^\s*$', np.nan, regex=True, inplace=True)
-        df_products['CustomerID'] = df_products['CustomerID'].fillna(np.nan)
+#         df_products.replace(r'^\s*$', np.nan, regex=True, inplace=True)
+#         df_products['CustomerID'] = df_products['CustomerID'].fillna(np.nan)
+        df_products['CustomerID'].replace([None], inplace=True)
         df_products.dropna(inplace=True)
         return df_products, list_content
 
