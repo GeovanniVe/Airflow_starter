@@ -135,7 +135,7 @@ class S3ToPostgresOperator(BaseOperator):
         """
         s3_key_bucket = self.pg_s3_input()
         df_products, list_content = self.s3_object_to_df(s3_key_bucket)
-        self.create_db_table(list_content)
+        self.create_db_table(df_products)
 #         self.print_table()
 
     def pg_s3_input(self):
@@ -214,7 +214,7 @@ class S3ToPostgresOperator(BaseOperator):
 
         return df_products, list_content
 
-    def create_db_table(self, list_content):
+    def create_db_table(self, df_products):
         """
         Based on a .sql file it creates the table in the given database.
 
@@ -241,7 +241,7 @@ class S3ToPostgresOperator(BaseOperator):
                          'InvoiceDate', 'UnitPrice', 'CustomerID', 'Country']
 
         self.current_table = self.schema + '.' + self.table
-        self.pg_hook.insert_rows(self.current_table, list_content,
+        self.pg_hook.insert_rows(self.current_table, [tuple(x) for x in df_products.to_numpy()],
                                  target_fields=target_fields, commit_every=1000,
                                  replace=False)
 
