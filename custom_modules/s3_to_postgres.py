@@ -213,8 +213,8 @@ class S3ToPostgresOperator(BaseOperator):
                                   dtype=schema)
 #         df_products.replace(r'^\s*$', np.nan, regex=True, inplace=True)
 #         df_products['CustomerID'] = df_products['CustomerID'].fillna(np.nan)
-        df_products['CustomerID'].fillna([None], inplace=True)
-        df_products.dropna(inplace=True)
+        df_products.fillna([None], inplace=True)
+#         df_products.dropna(inplace=True)
         return df_products, list_content
 
     def create_db_table(self, df_products):
