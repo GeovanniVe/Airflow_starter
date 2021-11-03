@@ -204,14 +204,13 @@ class S3ToPostgresOperator(BaseOperator):
             'CustomerID': 'float64',
             'Country': str
         }
-        self.log.info('list_content success!!!', list_content)
+        
         df_products = pd.read_csv(io.StringIO(list_content),
                                   header=0,
                                   delimiter=',',
                                   low_memory=False,
                                   dtype=schema)
         df_products.fillna(value='NULL', inplace=True)
-        self.log.info('Pandas df created', df_products)
 
         return df_products, list_content
 
@@ -262,7 +261,7 @@ class S3ToPostgresOperator(BaseOperator):
         cursor.execute(request)
         source = cursor.fetchall()
 
-        for row in source:
+        for cnt, row in enumerate(source):
             self.log.info("InvoiceNo: {0} - \
                           StockCode: {1} - \
                           Description: {2} - \
@@ -273,3 +272,5 @@ class S3ToPostgresOperator(BaseOperator):
                           Country: {7} ".
                           format(row[0], row[1], row[2], row[3],
                                  row[4], row[5], row[6], row[7]))
+            if cnt > 50:
+                break
