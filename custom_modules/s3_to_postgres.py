@@ -210,7 +210,7 @@ class S3ToPostgresOperator(BaseOperator):
                                   delimiter=',',
                                   low_memory=False,
                                   dtype=schema)
-        df_products.fillna(value='NULL', inplace=True)
+        df_products.fillna(value=None, inplace=True)
 
         return df_products, list_content
 
