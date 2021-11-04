@@ -159,7 +159,7 @@ class S3ToPostgresOperator(BaseOperator):
         self.pg_hook = PostgresHook(postgres_conn_id=self.postgres_conn_id)
         self.s3 = S3Hook(aws_conn_id=self.aws_conn_id, verify=self.verify)
 
-        self.log.info('Downloading S3 file: %s, string(self.s3))
+        self.log.info('Downloading S3 file: {0}".format(self.s3))
 
         s3_key_bucket = None
         if self.wildcard_match:
@@ -192,7 +192,7 @@ class S3ToPostgresOperator(BaseOperator):
             list_content: str
                 S3 file as a single string.
         """
-        self.log.info('s3_key_bucket: %s', string(s3_key_bucket))
+        self.log.info('s3_key_bucket', s3_key_bucket)
         self.log.info('all buckets', S3ListOperator(task_id='list_3s_files',
                                                     bucket=self.s3_bucket, 
                                                     prefix='de-bootcamp',
@@ -233,7 +233,7 @@ class S3ToPostgresOperator(BaseOperator):
         file_path = 'dags/repo/debootcamp.products.sql'
 
         
-        self.log.info("all content: %s", string(os.listdir()))
+        self.log.info("all content", os.listdir())
             
         with open(file_path, "r", encoding="UTF-8") as sql_file:
             sql_create_table_cmd = sql_file.read()
