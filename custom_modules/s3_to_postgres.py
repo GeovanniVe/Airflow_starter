@@ -159,7 +159,7 @@ class S3ToPostgresOperator(BaseOperator):
         self.pg_hook = PostgresHook(postgres_conn_id=self.postgres_conn_id)
         self.s3 = S3Hook(aws_conn_id=self.aws_conn_id, verify=self.verify)
 
-        self.log.info("Downloading S3 file:", self.s3)
+        self.log.info("Downloading S3 file: {0}".format(self.s3))
 
         s3_key_bucket = None
         if self.wildcard_match:
