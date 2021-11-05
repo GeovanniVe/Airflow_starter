@@ -136,7 +136,7 @@ class S3ToPostgresOperator(BaseOperator):
             None
         """
         s3_key_bucket = self.pg_s3_input()
-        #df_products, list_content = self.s3_object_to_df(s3_key_bucket)
+        df_products, list_content = self.s3_object_to_df(s3_key_bucket)
 #         self.create_db_table(df_products)
 #         self.print_table()
 
