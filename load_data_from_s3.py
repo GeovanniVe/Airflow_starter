@@ -2,7 +2,7 @@ from datetime import timedelta
 from airflow import DAG
 import airflow.utils.dates
 from custom_modules.s3_to_postgres import S3ToPostgresOperator
-
+from airflow.contrib.operators.s3_list_operator import S3ListOperator
 
 default_args = {
     'owner': 'geovanni.velazquez',
