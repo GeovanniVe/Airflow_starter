@@ -198,6 +198,7 @@ class S3ToPostgresOperator(BaseOperator):
                                 prefix='de-bootcamp',
                                 aws_conn_id='aws_default').output()
         self.log.info("all buckets: {0}".format(dir(names)))
+        self.log.info("all buckets: {0}".format(names))
         list_content = s3_key_bucket.get()['Body'].read() \
             .decode(encoding='utf-8', errors='ignore')
 
