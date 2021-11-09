@@ -193,12 +193,7 @@ class S3ToPostgresOperator(BaseOperator):
                 S3 file as a single string.
         """
         self.log.info("s3_key_bucket: {0}".format(s3_key_bucket))
-        names = S3ListOperator(task_id='list_3s_files',
-                                bucket=self.s3_bucket, 
-                                prefix='de-bootcamp',
-                                aws_conn_id='aws_default').output()
-        self.log.info("all buckets: {0}".format(dir(names)))
-        self.log.info("all buckets: {0}".format(names))
+        
         list_content = s3_key_bucket.get()['Body'].read() \
             .decode(encoding='utf-8', errors='ignore')
 
