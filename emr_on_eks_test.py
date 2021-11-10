@@ -11,7 +11,7 @@ from airflow.utils.dates import days_ago
 os.environ["AWS_DEFAULT_REGION"] = "us-east-2"
 
 # [START howto_operator_emr_eks_env_variables]
-VIRTUAL_CLUSTER_ID = os.getenv("VIRTUAL_CLUSTER_ID", "virtual_cluster_test")
+VIRTUAL_CLUSTER_ID = "c8sqh6ldyv81dldwndm02b5c0"  # os.getenv("VIRTUAL_CLUSTER_ID", "virtual_cluster_test")
 JOB_ROLE_ARN = os.getenv("JOB_ROLE_ARN", "arn:aws:iam::855157247171:role/aws-service-role/emr-containers.amazonaws.com/AWSServiceRoleForAmazonEMRContainers")
 # [END howto_operator_emr_eks_env_variables]
 
