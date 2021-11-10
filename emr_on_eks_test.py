@@ -58,7 +58,7 @@ with DAG(
     job_starter = EMRContainerOperator(
         task_id="start_job",
         virtual_cluster_id=VIRTUAL_CLUSTER_ID,
-        execution_role_arn="arn:aws:emr-containers:us-east-2:855157247171:/virtualclusters/c8sqh6ldyv81dldwndm02b5c0",
+        execution_role_arn=JOB_ROLE_ARN,
         release_label="emr-6.3.0-latest",
         job_driver=JOB_DRIVER_ARG,
         name="pi.py",
