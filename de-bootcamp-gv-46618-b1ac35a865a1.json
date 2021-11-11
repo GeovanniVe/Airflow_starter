@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "de-bootcamp-gv-46618",
+  "private_key_id": "b1ac35a865a113063f60aeac05d42da21d7598b1",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQC1MxeDDGkLL3bF\n0XPkRENwpGTxJ/yB97uj70+6ry+qpK8Z04Sn81W4nPXcCjHhn2vHlb6OLcRN/QiA\nbAwijOmPWKkfnIFznHJSYUTtDrmiU4U5BxfBiHQHRYcEA92Cbz8gmgutaqXKUyNy\nzBP3bdmXBaHa+GXJSAKnna9t5ELTXrmgrAdpSEFPEKscHhKrrflw1tVDwFucK6CQ\nf7Xu+spreAf4MSL8t/GRJWL8AwdUTBNN3+HIWV9jRGPFaQ10ika053bEICh4PBbA\nTEpBc/RsjdCrYBhfLOiRGRNfpBIxZc1BFH5P0IjAhIZQHa5uV45koFCI+shmdog1\nIA0+Su+RAgMBAAECggEAUlPO5HdwiKj9lX6HYdjULWs8A8fvtdtpkV/rgT4UcbtW\nZW0Rsj9gnLsQB/RH2qPU0/9I74+CyA5l3Pd6gf41JjCZ0ueId49G8AAK0Yxlsoex\nGYqL9B473Yvs/tmEvL0v2O+0y4uPnUAt9HwdvEdYXAIumm9Oy+egcSi3ar4R0LfM\nYDk8ML6iTKAUVS/h+EIRh1d/NGxMDUW64qsUkyIFJ4KlCngAUJ48N6zA3x3oZFqa\nxWrbpgZ6ppJsP+DeAjJrbbh/aEt0ALrZ/1kJtgJ7pJVCDwQvCz8LvJWD+DVSGTfF\n3R9d6IjJA6TfovxVmvayIzQD715HRACqtYUemNaA0wKBgQD9Y/LQfSeCJdhi+k8M\nmTUWLug5itk/gBLaK08tLREM6FMFFXBRq9EQt/HtRUd/souMgP4BwvfXlV3JmZX8\nX/cZnoS8D6XP2oAw8ZqWGbWUKwXwsvDbYM+U7lHV3ikphf4t0nFahpzsGaUNZQ+v\nmQ9qaFCwEdszkRQ8NxRwuZferwKBgQC3ENDRxAbk3e3m4EyPtfSXz921sP0mP/Du\n7+ZrGm9o8aCCCSlhgYqH6vnyfR57OCIbFWDvbJq4AU3NbjVK9RigwErGoaADVk3J\n/j74nIvJpX01Z5M7DjVxjtSG7O6Yz/qpw0j93R2kEVS8/TrTYjmHSC1mQfspZfDj\nDi4IyRulvwKBgQDl5/TdVGEvhjUSgTiOHsh7Cy5rX18EbaktSJR7UeOhiX4iI7SY\ndcOoXq3kcbKQ26ggYL2XTZZghcbl7zOWHGBwX1Lh63Sv5fnf7qcrP8Jv4KVwInvF\nIM7Xu3CHEx7X7RqV6tYso+znj9EhGSwlUEQbcPCdAGaaIC1zASrLqKlyQwKBgQCt\n9lbZ35RFjPf0PBXFQz2pviiL7iLCZGTKSkMGaFqSuXqz14zxUa6ZNpxK6Mc8hL00\nS36QRv5H+UU8AIy4LG045UKpuxFZ2nuVhfvFOM5F0vNG+qQYrInw3a/sf97EbG9h\nP2hvhd4S+T0zUtjB40eT3Oz3jZ/lWTAuNF1ej+2r9QKBgQCcpVsmXDQsRisFjdxf\neB4IMz1Q+jcK0HqDver9OBhpfSyUgXMpPqqQ6iwceX7BbgKyzpZf0bkceqVfW2gv\nM29UEzWb2gLQwZl/Jj5WQC/5U2Z/SmAwFwrwAb3kCmbi/ak9t29YJFpc9CccJKRx\nXKqdNJcoHCg4TBOha+kA8eGKcg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "airflow-cluster@de-bootcamp-gv-46618.iam.gserviceaccount.com",
+  "client_id": "109718305893634874188",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/airflow-cluster%40de-bootcamp-gv-46618.iam.gserviceaccount.com"
+}
