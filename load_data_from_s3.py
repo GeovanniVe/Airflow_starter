@@ -27,7 +27,7 @@ with dag:
                                         schema='debootcamp',
                                         table='products',
                                         s3_bucket='de-bootcamp-airflow-data',
-                                        s3_key=names.xcom_pull(task_ids='list_3s_files'),
+                                        s3_key=names.xcom_pull(task_ids="list_3s_files"),
                                         postgres_conn_id='postgres_default',
                                         aws_conn_id='aws_default',
                                         dag=dag)
