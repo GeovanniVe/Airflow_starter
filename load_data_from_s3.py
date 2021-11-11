@@ -3,6 +3,8 @@ from airflow import DAG
 import airflow.utils.dates
 from custom_modules.s3_to_postgres import S3ToPostgresOperator
 from airflow.contrib.operators.s3_list_operator import S3ListOperator
+import logging
+
 
 default_args = {
     'owner': 'geovanni.velazquez',
@@ -21,6 +23,8 @@ with dag:
                                     prefix='s',
                                     aws_conn_id='aws_default')
     
+    value = names.xcom_pull(task_ids='list_3s_files')
+    logging.info("name: {0}".format(value))
     process_data = S3ToPostgresOperator(task_id='dag_s3_to_postgres',
                                         schema='debootcamp',
                                         table='products',
