@@ -23,13 +23,11 @@ with dag:
                                     prefix='s',
                                     aws_conn_id='aws_default')
     
-    value = names.xcom_pull(task_ids='list_3s_files')
-    logging.info("name: {0}".format(value))
     process_data = S3ToPostgresOperator(task_id='dag_s3_to_postgres',
                                         schema='debootcamp',
                                         table='products',
                                         s3_bucket='de-bootcamp-airflow-data',
-                                        s3_key='sample.csv',
+                                        s3_key=names.xcom_pull(task_ids='list_3s_files'),
                                         postgres_conn_id='postgres_default',
                                         aws_conn_id='aws_default',
                                         dag=dag)
