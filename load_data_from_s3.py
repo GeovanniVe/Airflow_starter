@@ -18,6 +18,16 @@ dag = DAG('dag_insert_data_postgres',
           schedule_interval='@once')
 
 with dag:
+    task_google_sheets_values_to_s3 = GoogleApiToS3Operator(
+        google_api_service_name='drive',
+        google_api_service_version='v3',
+        google_api_endpoint_path='drive.files.get',
+        google_api_endpoint_params={'fileId': "1nj2AXJG10DTjSjL0J17WlDdZeunJQ9r6"},
+        s3_destination_key="de-bootcamp-airflow-data",
+        task_id='google_drive_get_to_s3',
+        dag=dag,
+    )
+    
     names = S3ListOperator(task_id='list_3s_files',
                                     bucket="de-bootcamp-airflow-data", 
                                     prefix='s',
@@ -34,5 +44,5 @@ with dag:
 
     
     
-    names >> process_data
+    task_google_sheets_values_to_s3 >> names >> process_data
 
