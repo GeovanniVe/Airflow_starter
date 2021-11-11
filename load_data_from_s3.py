@@ -4,7 +4,9 @@ import airflow.utils.dates
 from custom_modules.s3_to_postgres import S3ToPostgresOperator
 from airflow.contrib.operators.s3_list_operator import S3ListOperator
 from airflow.providers.amazon.aws.transfers.google_api_to_s3 import GoogleApiToS3Operator
+import os
 
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "dags/repo/client_secret_871737823530-2ecrb294lru9cih4de5esno3corn6oo0.apps.googleusercontent.com.json"
 
 default_args = {
     'owner': 'geovanni.velazquez',
