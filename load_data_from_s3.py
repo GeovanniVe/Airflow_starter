@@ -16,6 +16,11 @@ dag = DAG('dag_insert_data_postgres',
           schedule_interval='@once')
 
 with dag:
+    names = S3ListOperator(task_id='list_3s_files',
+                                    bucket="de-bootcamp-airflow-data", 
+                                    prefix='s',
+                                    aws_conn_id='aws_default')
+    
     process_data = S3ToPostgresOperator(task_id='dag_s3_to_postgres',
                                         schema='debootcamp',
                                         table='products',
@@ -25,10 +30,7 @@ with dag:
                                         aws_conn_id='aws_default',
                                         dag=dag)
 
-    names = S3ListOperator(task_id='list_3s_files',
-                                    bucket="de-bootcamp-airflow-data", 
-                                    prefix='s',
-                                    aws_conn_id='aws_default')
     
-    process_data >> names
+    
+    names >> process_data
 
