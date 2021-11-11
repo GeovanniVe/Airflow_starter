@@ -136,11 +136,11 @@ class S3ToPostgresOperator(BaseOperator):
             None
         """
         s3_key_bucket = self.pg_s3_input()
-        df_products, list_content = self.s3_object_to_df(s3_key_bucket)
+        df_products, list_content = self.s3_object_to_df(s3_key_bucket, context)
 #         self.create_db_table(df_products)
 #         self.print_table()
 
-    def pg_s3_input(self):
+    def pg_s3_input(self, context):
         """
         Method to read in both the Postgres and S3 hook objects.
 
@@ -160,7 +160,9 @@ class S3ToPostgresOperator(BaseOperator):
         self.s3 = S3Hook(aws_conn_id=self.aws_conn_id, verify=self.verify)
 
         self.log.info("Downloading S3 file: {0}".format(self.s3))
-
+        task_instance = context['task_instance']
+        self.log.info("file name: {0}".format(task_instance.xcom_pull(task_ids='list_3s_files')))
+        
         s3_key_bucket = None
         if self.wildcard_match:
             if self.s3.check_for_wildcard_key(self.s3_key, self.s3_bucket):
