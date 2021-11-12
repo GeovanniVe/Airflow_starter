@@ -19,7 +19,7 @@ JOB_ROLE_ARN = os.getenv("JOB_ROLE_ARN", "arn:aws:iam::855157247171:role/aws-ser
 # [START howto_operator_emr_eks_config]
 JOB_DRIVER_ARG = {
     "sparkSubmitJobDriver": {
-        "entryPoint": "local:///usr/lib/spark/examples/src/main/python/pi.py",
+        "entryPoint": "dags/repo/pi2.py",
         "sparkSubmitParameters": "--conf spark.executors.instances=2 --conf spark.executors.memory=2G --conf spark.executor.cores=2 --conf spark.driver.cores=1",  # noqa: E501
     }
 }
