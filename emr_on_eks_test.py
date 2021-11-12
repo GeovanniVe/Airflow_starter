@@ -20,7 +20,7 @@ JOB_ROLE_ARN = os.getenv("JOB_ROLE_ARN", "arn:aws:iam::855157247171:role/aws-ser
 JOB_DRIVER_ARG = {
     "sparkSubmitJobDriver": {
         "entryPoint": "local:///opt/airflow/dags/repo/spark_ex.py",
-        "sparkSubmitParameters": "--conf spark.executors.instances=1 --conf spark.executors.memory=128M --conf spark.executor.cores=1 --conf spark.driver.cores=1",  # noqa: E501
+        "sparkSubmitParameters": "--conf spark.executors.instances=1 --conf spark.executors.memory=500M --conf spark.executor.cores=1 --conf spark.driver.cores=1",  # noqa: E501
     }
 }
 
