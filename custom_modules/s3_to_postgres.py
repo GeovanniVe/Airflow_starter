@@ -251,7 +251,7 @@ class S3ToPostgresOperator(BaseOperator):
         df_row_list = [tuple(x) for x in df_products.to_numpy()]
         self.pg_hook.insert_rows(self.current_table, df_row_list,
                                  target_fields=target_fields, commit_every=1000,
-                                 replace=False)
+                                 replace=True)
 
     def print_table(self):
         """
