@@ -6,7 +6,6 @@ from airflow.contrib.operators.s3_list_operator import S3ListOperator
 from airflow.providers.amazon.aws.transfers.google_api_to_s3 import GoogleApiToS3Operator
 import os
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "dags/repo/de-bootcamp-gv-46618-b1ac35a865a1.json"
 
 default_args = {
     'owner': 'geovanni.velazquez',
@@ -20,16 +19,6 @@ dag = DAG('dag_insert_data_postgres',
           schedule_interval='@once')
 
 with dag:
-    task_google_sheets_values_to_s3 = GoogleApiToS3Operator(
-        google_api_service_name='drive',
-        google_api_service_version='v3',
-        google_api_endpoint_path='drive.files.get',
-        google_api_endpoint_params={'fileId': "1nj2AXJG10DTjSjL0J17WlDdZeunJQ9r6"},
-        s3_destination_key="de-bootcamp-airflow-data",
-        task_id='google_drive_get_to_s3',
-        dag=dag,
-    )
-    
     names = S3ListOperator(task_id='list_3s_files',
                                     bucket="de-bootcamp-airflow-data", 
                                     prefix='s',
@@ -46,5 +35,5 @@ with dag:
 
     
     
-    task_google_sheets_values_to_s3 >> names >> process_data
+    names >> process_data
 
