@@ -25,20 +25,26 @@ JOB_DRIVER_ARG = {
 }
 
 CONFIGURATION_OVERRIDES_ARG = {
-    "applicationConfiguration": [
-        {
-            "classification": "spark-defaults",
-            "properties": {
-                "spark.hadoop.hive.metastore.client.factory.class": "com.amazonaws.glue.catalog.metastore.AWSGlueDataCatalogHiveClientFactory",  # noqa: E501
+    "configurationOverrides": {
+        "applicationConfiguration": [
+            {
+                "classification": "spark-defaults",
+                "properties": {
+                  "spark.dynamicAllocation.enabled": "false",
+                  "spark.kubernetes.executor.deleteOnTermination": "true"
+                }
+            }
+        ],
+        "monitoringConfiguration": {
+            "cloudWatchMonitoringConfiguration": {
+                "logGroupName": "/emr-on-eks/eksworkshop-eksctl",
+                "logStreamNamePrefix": "pi"
             },
+            "s3MonitoringConfiguration": {
+                "logUri": "s3://spark-test-samp"
+            }
         }
-    ],
-    "monitoringConfiguration": {
-        "cloudWatchMonitoringConfiguration": {
-            "logGroupName": "/aws/emr-eks-spark",
-            "logStreamNamePrefix": "airflow",
-        }
-    },
+    }
 }
 # [END howto_operator_emr_eks_config]
 
