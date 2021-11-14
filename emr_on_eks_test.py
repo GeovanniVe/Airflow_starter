@@ -26,9 +26,8 @@ JOB_DRIVER_ARG = {
 
 CONFIGURATION_OVERRIDES_ARG = {
     "monitoringConfiguration": {
-        "cloudWatchMonitoringConfiguration": {
-            "logGroupName": "/aws/emr-eks-spark",
-            "logStreamNamePrefix": "airflow",
+        "S3MonitoringConfiguration": {
+            "logUri": "s3://spark-test-samp/emreks-logs"
         }
     },
 }
