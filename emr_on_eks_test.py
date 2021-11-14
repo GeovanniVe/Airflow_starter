@@ -25,14 +25,6 @@ JOB_DRIVER_ARG = {
 }
 
 CONFIGURATION_OVERRIDES_ARG = {
-    "applicationConfiguration": [
-        {
-            "classification": "spark-defaults",
-            "properties": {
-                "spark.hadoop.hive.metastore.client.factory.class": "com.amazonaws.glue.catalog.metastore.AWSGlueDataCatalogHiveClientFactory",  # noqa: E501
-            },
-        }
-    ],
     "monitoringConfiguration": {
         "cloudWatchMonitoringConfiguration": {
             "logGroupName": "/aws/emr-eks-spark",
