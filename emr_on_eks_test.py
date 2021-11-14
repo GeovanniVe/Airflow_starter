@@ -26,7 +26,7 @@ JOB_DRIVER_ARG = {
 
 CONFIGURATION_OVERRIDES_ARG = {
     "monitoringConfiguration": {
-        "S3MonitoringConfiguration": {
+        "s3MonitoringConfiguration": {
             "logUri": "s3://spark-test-samp/emreks-logs"
         }
     },
