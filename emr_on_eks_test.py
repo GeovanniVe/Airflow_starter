@@ -7,11 +7,14 @@ from datetime import timedelta
 from airflow import DAG
 from airflow.providers.amazon.aws.operators.emr_containers import EMRContainerOperator
 from airflow.utils.dates import days_ago
+import logging
 
 os.environ["AWS_DEFAULT_REGION"] = "us-east-2"
 
 # [START howto_operator_emr_eks_env_variables]
 VIRTUAL_CLUSTER_ID = "9re14xmwg70zrcds3nfh6p8w1"  # os.getenv("VIRTUAL_CLUSTER_ID", "virtual_cluster_test")
+logging.info("getting virtual cluster ID: {0}".format(os.getenv("VIRTUAL_CLUSTER_ID", "virtual_cluster_test")))
+logging.info("getting virtual cluster ID 2: {0}".format(os.getenv("VIRTUAL_CLUSTER_ID", "airflow-eks-data-bootcamp")))
 JOB_ROLE_ARN = "arn:aws:iam::855157247171:role/EMRContainers-JobExecutionRole"
 # [END howto_operator_emr_eks_env_variables]
 
