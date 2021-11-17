@@ -12,7 +12,7 @@ import logging
 os.environ["AWS_DEFAULT_REGION"] = "us-east-2"
 
 # [START howto_operator_emr_eks_env_variables]
-VIRTUAL_CLUSTER_ID = "mttkn5a78aps1du9px73v5f6u"  # os.getenv("VIRTUAL_CLUSTER_ID", "virtual_cluster_test")
+VIRTUAL_CLUSTER_ID = "fl3jo8fwv5f4xt4r49dua5vt0"  # os.getenv("VIRTUAL_CLUSTER_ID", "virtual_cluster_test")
 logging.info("getting virtual cluster ID: {0}".format(os.getenv("VIRTUAL_CLUSTER_ID", "virtual_cluster_test")))
 logging.info("getting virtual cluster ID 2: {0}".format(os.getenv("VIRTUAL_CLUSTER_ID", "airflow-eks-data-bootcamp")))
 JOB_ROLE_ARN = "arn:aws:iam::855157247171:role/EMRContainers-JobExecutionRole"
