@@ -6,6 +6,7 @@ from datetime import timedelta
 
 from airflow import DAG
 from airflow.providers.amazon.aws.operators.emr_containers import EMRContainerOperator
+from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
 
 os.environ["AWS_DEFAULT_REGION"] = "us-east-2"
