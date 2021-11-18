@@ -7,7 +7,6 @@ from datetime import timedelta
 from airflow import DAG
 from airflow.providers.amazon.aws.operators.emr_containers import EMRContainerOperator
 from airflow.utils.dates import days_ago
-import logging
 
 os.environ["AWS_DEFAULT_REGION"] = "us-east-2"
 
@@ -47,6 +46,13 @@ CONFIGURATION_OVERRIDES_ARG = {
 }
 # [END howto_operator_emr_eks_config]
 
+def print_params_fn(**kwargs):
+    import logging
+    logging.info("getting virtual cluster ID: {0}".format(os.getenv("VIRTUAL_CLUSTER_ID", "virtual_cluster_test")))
+    logging.info("getting virtual cluster ID 2: {0}".format(os.getenv("VIRTUAL_CLUSTER_ID", "airflow-eks-data-bootcamp")))
+    return None
+
+
 with DAG(
     dag_id='emr_eks_pi_job',
     dagrun_timeout=timedelta(hours=2),
@@ -58,8 +64,12 @@ with DAG(
     # An example of how to get the cluster id and arn from an Airflow connection
     # VIRTUAL_CLUSTER_ID = '{{ conn.emr_eks.extra_dejson["virtual_cluster_id"] }}'
     # JOB_ROLE_ARN = '{{ conn.emr_eks.extra_dejson["job_role_arn"] }}'
-    logging.info("getting virtual cluster ID: {0}".format(os.getenv("VIRTUAL_CLUSTER_ID", "virtual_cluster_test")))
-    logging.info("getting virtual cluster ID 2: {0}".format(os.getenv("VIRTUAL_CLUSTER_ID", "airflow-eks-data-bootcamp")))
+    
+    print_params = PythonOperator(task_id="print_params",
+                              python_callable=print_params_fn,
+                              provide_context=True,
+                              dag=dag)
+    
     # [START howto_operator_emr_eks_jobrun]
     job_starter = EMRContainerOperator(
         task_id="start_job",
@@ -71,3 +81,5 @@ with DAG(
         name="pi.py",
     )
     # [END howto_operator_emr_eks_jobrun]
+    
+    print_params >> job_starter
