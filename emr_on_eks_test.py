@@ -32,6 +32,7 @@ CONFIGURATION_OVERRIDES_ARG = {
             "properties": {
               "spark.dynamicAllocation.enabled": "false",
               "spark.kubernetes.executor.deleteOnTermination": "true"
+              "spark.kubernetes.container.image": "855157247171.dkr.ecr.us-east-2.amazonaws.com/emr6.3_custom_repo"
             }
         }
     ],
