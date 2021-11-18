@@ -31,9 +31,7 @@ CONFIGURATION_OVERRIDES_ARG = {
             "classification": "spark-defaults",
             "properties": {
               "spark.dynamicAllocation.enabled": "false",
-              "spark.kubernetes.executor.deleteOnTermination": "true",
-              "spark.pyspark.virtualenv.enabled": "true"
-              
+              "spark.kubernetes.executor.deleteOnTermination": "true"
             }
         }
     ],
