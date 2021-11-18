@@ -51,6 +51,7 @@ def print_params_fn(**kwargs):
     import logging
     logging.info("getting virtual cluster ID: {0}".format(os.getenv("VIRTUAL_CLUSTER_ID", "virtual_cluster_test")))
     logging.info("getting virtual cluster ID 2: {0}".format(os.getenv("VIRTUAL_CLUSTER_ID", "airflow-eks-data-bootcamp")))
+    logging.info("{0}".format(os.environ))
     return None
 
 
