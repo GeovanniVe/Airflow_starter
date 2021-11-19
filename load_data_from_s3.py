@@ -4,7 +4,6 @@ import airflow.utils.dates
 import time
 time.sleep(5)
 import os
-os.environ['PYTHONPATH'] = "/opt/airflow/dags/repo/custom_modules"
 # from custom_modules.s3_to_postgres import S3ToPostgresOperator
 from airflow.contrib.operators.s3_list_operator import S3ListOperator
 from airflow.providers.amazon.aws.transfers.google_api_to_s3 import GoogleApiToS3Operator
@@ -14,6 +13,7 @@ from airflow.operators.python import PythonOperator
 def print_paths():
     import logging
     import sys
+    os.environ['PYTHONPATH'] = "/opt/airflow/dags/repo/custom_modules"
     logging.info(sys.path)
 
 default_args = {
