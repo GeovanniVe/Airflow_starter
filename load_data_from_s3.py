@@ -1,10 +1,9 @@
 from datetime import timedelta
 from airflow import DAG
 import airflow.utils.dates
-import time
+
 import sys
 sys.path.append("/opt/airflow/dags/repo/custom_modules")
-time.sleep(5)
 import os
 from s3_to_postgres import S3ToPostgresOperator
 from airflow.contrib.operators.s3_list_operator import S3ListOperator
