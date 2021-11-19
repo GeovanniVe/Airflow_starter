@@ -11,6 +11,7 @@ from airflow.operators.python import PythonOperator
 
 def print_paths():
     import logging
+    import sys
     logging.info(sys.path)
 
 default_args = {
