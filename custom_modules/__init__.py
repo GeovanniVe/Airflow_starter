@@ -1,5 +1,2 @@
-from custom_modules.s3_to_postgres import S3ToPostgresOperator
-
-__all__ = [
-    'S3ToPostgresOperator'
-]
+import sys
+sys.path.append("/opt/airflow/dags/repo/custom_modules")
