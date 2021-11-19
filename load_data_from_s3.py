@@ -13,7 +13,7 @@ from airflow.operators.python import PythonOperator
 def print_paths():
     import logging
     import sys
-    os.environ['PYTHONPATH'] = "/opt/airflow/dags/repo/custom_modules"
+    sys.path.append("/opt/airflow/dags/repo/custom_modules")
     logging.info(sys.path)
 
 default_args = {
