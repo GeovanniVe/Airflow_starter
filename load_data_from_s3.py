@@ -6,6 +6,7 @@ time.sleep(5)
 # from custom_modules.s3_to_postgres import S3ToPostgresOperator
 from airflow.contrib.operators.s3_list_operator import S3ListOperator
 from airflow.providers.amazon.aws.transfers.google_api_to_s3 import GoogleApiToS3Operator
+from airflow.operators.python import PythonOperator
 
 
 def print_paths():
