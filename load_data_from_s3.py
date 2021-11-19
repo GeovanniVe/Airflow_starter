@@ -1,13 +1,13 @@
 from datetime import timedelta
 from airflow import DAG
 import airflow.utils.dates
+import time
+time.sleep(5)
 from custom_modules.s3_to_postgres import S3ToPostgresOperator
 from airflow.contrib.operators.s3_list_operator import S3ListOperator
 from airflow.providers.amazon.aws.transfers.google_api_to_s3 import GoogleApiToS3Operator
 import os
-import time
 
-time.sleep(5)
 
 
 default_args = {
