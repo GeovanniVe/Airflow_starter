@@ -62,6 +62,7 @@ with DAG(
     start_date=days_ago(1),
     schedule_interval="@once",
     tags=["emr_containers", "example"],
+    catchup=False
 ) as dag:
 
     # An example of how to get the cluster id and arn from an Airflow connection
