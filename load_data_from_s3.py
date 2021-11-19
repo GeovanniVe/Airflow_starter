@@ -40,17 +40,17 @@ with dag:
                                     bucket="de-bootcamp-airflow-data", 
                                     prefix='s',
                                     aws_conn_id='aws_default')
-    print_path >> names
-#     process_data = S3ToPostgresOperator(task_id='dag_s3_to_postgres',
-#                                         schema='debootcamp',
-#                                         table='products',
-#                                         s3_bucket='de-bootcamp-airflow-data',
-#                                         s3_key='sample.csv',
-#                                         postgres_conn_id='postgres_default',
-#                                         aws_conn_id='aws_default',
-#                                         dag=dag)
+    
+    process_data = S3ToPostgresOperator(task_id='dag_s3_to_postgres',
+                                        schema='debootcamp',
+                                        table='products',
+                                        s3_bucket='de-bootcamp-airflow-data',
+                                        s3_key='sample.csv',
+                                        postgres_conn_id='postgres_default',
+                                        aws_conn_id='aws_default',
+                                        dag=dag)
 
     
-    
-#     names >> process_data
+    print_path
+    names >> process_data
 
