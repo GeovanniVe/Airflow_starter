@@ -34,6 +34,7 @@ with dag:
                               python_callable=print_paths,
                               provide_context=True,
                               dag=dag)
+    from custom_modules.s3_to_postgres import S3ToPostgresOperator
     names = S3ListOperator(task_id='list_3s_files',
                                     bucket="de-bootcamp-airflow-data", 
                                     prefix='s',
