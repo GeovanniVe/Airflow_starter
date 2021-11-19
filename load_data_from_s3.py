@@ -5,6 +5,9 @@ import airflow.utils.dates
 from airflow.contrib.operators.s3_list_operator import S3ListOperator
 from airflow.providers.amazon.aws.transfers.google_api_to_s3 import GoogleApiToS3Operator
 import os
+import time
+
+time.sleep(5)
 
 
 default_args = {
