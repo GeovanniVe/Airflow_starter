@@ -3,12 +3,14 @@ from airflow import DAG
 import airflow.utils.dates
 import time
 time.sleep(5)
-from custom_modules.s3_to_postgres import S3ToPostgresOperator
+# from custom_modules.s3_to_postgres import S3ToPostgresOperator
 from airflow.contrib.operators.s3_list_operator import S3ListOperator
 from airflow.providers.amazon.aws.transfers.google_api_to_s3 import GoogleApiToS3Operator
-import os
 
 
+def print_paths():
+    import sys 
+    print(sys.path)
 
 default_args = {
     'owner': 'geovanni.velazquez',
@@ -24,11 +26,15 @@ dag = DAG('dag_insert_data_postgres',
           tags=['s3_postgres'])
 
 with dag:
+    print_path = PythonOperator(task_id="print_params",
+                              python_callable=print_paths,
+                              provide_context=True,
+                              dag=dag)
     names = S3ListOperator(task_id='list_3s_files',
                                     bucket="de-bootcamp-airflow-data", 
                                     prefix='s',
                                     aws_conn_id='aws_default')
-    
+    print_path >> names
 #     process_data = S3ToPostgresOperator(task_id='dag_s3_to_postgres',
 #                                         schema='debootcamp',
 #                                         table='products',
