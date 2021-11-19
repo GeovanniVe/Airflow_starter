@@ -17,7 +17,8 @@ default_args = {
 dag = DAG('dag_insert_data_postgres', 
           default_args=default_args,
           schedule_interval='@once',
-          catchup=False,)
+          catchup=False,
+          tags=['s3_postgres'])
 
 with dag:
     names = S3ListOperator(task_id='list_3s_files',
