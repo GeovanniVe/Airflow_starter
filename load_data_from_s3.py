@@ -4,7 +4,7 @@ import airflow.utils.dates
 import time
 time.sleep(5)
 import os
-# from custom_modules.s3_to_postgres import S3ToPostgresOperator
+from s3_to_postgres import S3ToPostgresOperator
 from airflow.contrib.operators.s3_list_operator import S3ListOperator
 from airflow.providers.amazon.aws.transfers.google_api_to_s3 import GoogleApiToS3Operator
 from airflow.operators.python import PythonOperator
@@ -34,7 +34,6 @@ with dag:
                               python_callable=print_paths,
                               provide_context=True,
                               dag=dag)
-    from custom_modules.s3_to_postgres import S3ToPostgresOperator
     names = S3ListOperator(task_id='list_3s_files',
                                     bucket="de-bootcamp-airflow-data", 
                                     prefix='s',
