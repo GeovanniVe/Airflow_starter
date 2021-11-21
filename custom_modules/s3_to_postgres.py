@@ -249,6 +249,12 @@ class S3ToPostgresOperator(BaseOperator):
 
         self.current_table = self.schema + '.' + self.table
         df_row_list = [tuple(x) for x in df_products.to_numpy()]
+        
+        # check table exist
+        query = hook.get_first(sql=sql_to_check_table_exist.format(schema, table_name))
+        self.log.info(query)
+        
+        replace_val = if query False else True
         self.pg_hook.insert_rows(self.current_table, df_row_list,
                                  target_fields=target_fields, commit_every=1000,
                                  replace=True)
