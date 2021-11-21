@@ -206,7 +206,7 @@ class PostgresToS3Operator(BaseOperator):
         self.log.info("s3_key_bucket: {0}".format(s3_key_bucket))
         self.log.info("loading file... {0}".format(type(df.to_string())))
         self.s3.load_string(string_data=df.to_string(),
-                            key=s3_key_bucket,
+                            key="user_purchase.csv",
                             bucket_name=self.s3_bucket,
                             replace=True)
 
