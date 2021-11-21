@@ -135,8 +135,8 @@ class PostgresToS3Operator(BaseOperator):
         Returns:
             None
         """
-        s3_key_bucket = self.pg_to_pandas(context)
-#         df_products, list_content = self.s3_object_to_df(s3_key_bucket)
+        df = self.pg_to_pandas(context)
+        self.df_object_to_s3(df)
         #         self.create_db_table(df_products)
         # self.print_table()
 
@@ -173,9 +173,9 @@ class PostgresToS3Operator(BaseOperator):
 
         df = pd.DataFrame(source)
         self.log.info("df: {0}".format(df))
-        # return s3_key_bucket
+        return df
 
-    def s3_object_to_df(self, s3_key_bucket):
+    def df_object_to_s3(self, df):
         """
         Converts s3 file into a string and dataframe.
 
@@ -191,31 +191,24 @@ class PostgresToS3Operator(BaseOperator):
             list_content: str
                 S3 file as a single string.
         """
+        s3_key_bucket = None
+        if self.wildcard_match:
+            if self.s3.check_for_wildcard_key(self.s3_key, self.s3_bucket):
+                raise AirflowException('No key matches', self.s3_key)
+            s3_key_bucket = self.s3.get_wildcard_key(self.s3_key,
+                                                     self.s3_bucket)
+        else:
+            if not self.s3.check_for_key(self.s3_key, self.s3_bucket):
+                raise AirflowException("The key {0} does not exist".
+                                       format(self.s3_key))
+            s3_key_bucket = self.s3.get_key(self.s3_key,
+                                            self.s3_bucket)
         self.log.info("s3_key_bucket: {0}".format(s3_key_bucket))
 
-        list_content = s3_key_bucket.get()['Body'].read() \
-            .decode(encoding='utf-8', errors='ignore')
-
-        schema = {
-            'InvoiceNo': str,
-            'StockCode': str,
-            'Description': str,
-            'Quantity': int,
-            'InvoiceDate': str,
-            'UnitPrice': 'float64',
-            'CustomerID': 'float64',
-            'Country': str
-        }
-
-        df_products = pd.read_csv(io.StringIO(list_content),
-                                  header=0,
-                                  delimiter=',',
-                                  low_memory=False,
-                                  dtype=schema)
-
-        self.log.info("df: {0}".format(df_products))
-        df_products.replace(np.nan, None, inplace=True)
-        return df_products, list_content
+        self.s3.load_file(filename="user_purchase.csv",
+                          key=s3_key_bucket,
+                          bucket_name=self.s3_bucket,
+                          replace=True)
 
     def create_db_table(self, df_products):
         """
