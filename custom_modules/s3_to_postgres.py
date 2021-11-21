@@ -271,7 +271,7 @@ class S3ToPostgresOperator(BaseOperator):
             None
         """
         request = "SELECT * FROM " + "debootcamp.products" +\
-                  " WHERE InvoiceNo = '536367'"
+                  " WHERE InvoiceNo = '536367' LIMIT 3"
         connection = self.pg_hook.get_conn()
         cursor = connection.cursor()
         cursor.execute(request)
