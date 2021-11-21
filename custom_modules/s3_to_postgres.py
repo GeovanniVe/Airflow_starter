@@ -137,7 +137,7 @@ class S3ToPostgresOperator(BaseOperator):
         """
         s3_key_bucket = self.pg_s3_input(context)
         df_products, list_content = self.s3_object_to_df(s3_key_bucket)
-        self.create_db_table(df_products)
+#         self.create_db_table(df_products)
         self.print_table()
 
     def pg_s3_input(self, context):
@@ -271,7 +271,7 @@ class S3ToPostgresOperator(BaseOperator):
             None
         """
         request = 'SELECT * FROM ' + self.current_table +\
-                  ' WHERE InvoiceNo = 536367'
+                  ' WHERE InvoiceNo = "536367"'
         connection = self.pg_hook.get_conn()
         cursor = connection.cursor()
         cursor.execute(request)
