@@ -9,6 +9,7 @@ from airflow.providers.amazon.aws.operators.emr_containers import EMRContainerOp
 from s3_to_postgres import S3ToPostgresOperator
 from airflow.contrib.operators.s3_list_operator import S3ListOperator
 from airflow.operators.python import PythonOperator
+import os
 os.environ["AWS_DEFAULT_REGION"] = "us-east-2"
 
 # [START howto_operator_emr_eks_env_variables]
