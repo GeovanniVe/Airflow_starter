@@ -277,7 +277,7 @@ class S3ToPostgresOperator(BaseOperator):
         cursor.execute(request)
         source = cursor.fetchall()
 
-        self.log.info("{0}".format(type(source)))
+        self.log.info("{0}".format(source[0]))
         for row in source:
             self.log.info("InvoiceNo: {0} - \
                           StockCode: {1} - \
