@@ -78,7 +78,7 @@ dag = DAG('dag_insert_data_postgres',
           tags=['s3_postgres'])
 
 with dag:
-    print_path = PythonOperator(task_id="print_params",
+    print_env = PythonOperator(task_id="print_params",
                               python_callable=print_paths,
                               provide_context=True,
                               dag=dag)
@@ -97,7 +97,7 @@ with dag:
                                         dag=dag)
 
     
-    print_path
+    print_env
     names >> process_data
 
 
@@ -105,7 +105,7 @@ with dag:
     # VIRTUAL_CLUSTER_ID = '{{ conn.emr_eks.extra_dejson["virtual_cluster_id"] }}'
     # JOB_ROLE_ARN = '{{ conn.emr_eks.extra_dejson["job_role_arn"] }}'
     
-    print_params = PythonOperator(task_id="print_params",
+    print_path = PythonOperator(task_id="print_path",
                               python_callable=print_params_fn,
                               provide_context=True,
                               dag=dag)
@@ -118,8 +118,8 @@ with dag:
         configuration_overrides=CONFIGURATION_OVERRIDES_ARG,
         release_label="emr-6.3.0-latest",
         job_driver=JOB_DRIVER_ARG,
-        name="pi.py",
+        name="movie_reviews.py",
     )
     # [END howto_operator_emr_eks_jobrun]
     
-    print_params >> job_starter
+    print_path >> job_starter
