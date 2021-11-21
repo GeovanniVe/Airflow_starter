@@ -205,10 +205,10 @@ class PostgresToS3Operator(BaseOperator):
                                             self.s3_bucket)
         self.log.info("s3_key_bucket: {0}".format(s3_key_bucket))
         self.log.info("loading file...")
-        self.s3.load_string(filename=df.to_string(),
-                         key=s3_key_bucket,
-                         bucket_name=self.s3_bucket,
-                         replace=True)
+        self.s3.load_string(string_data=df.to_string(),
+                            key=s3_key_bucket,
+                            bucket_name=self.s3_bucket,
+                            replace=True)
 
     def create_db_table(self, df_products):
         """
