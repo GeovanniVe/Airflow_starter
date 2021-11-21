@@ -7,6 +7,7 @@ sys.path.append("/opt/airflow/dags/repo/custom_modules")
 
 from airflow.providers.amazon.aws.operators.emr_containers import EMRContainerOperator
 from s3_to_postgres import S3ToPostgresOperator
+from postgres_to_s3 import PostgresToS3Operator
 from airflow.contrib.operators.s3_list_operator import S3ListOperator
 from airflow.operators.python import PythonOperator
 import os
@@ -97,10 +98,19 @@ with dag:
                                         postgres_conn_id='postgres_default',
                                         aws_conn_id='aws_default',
                                         dag=dag)
+    
+    pg_to_staging = S3ToPostgresOperator(task_id='dag_s3_to_postgres',
+                                        schema='debootcamp',
+                                        table='products',
+                                        s3_bucket='de-bootcamp-airflow-data',
+                                        s3_key='sample.csv',
+                                        postgres_conn_id='postgres_default',
+                                        aws_conn_id='aws_default',
+                                        dag=dag)
 
     
     print_env
-    names >> process_data
+    names >> process_data >> pg_to_staging
 
 
     # An example of how to get the cluster id and arn from an Airflow connection
