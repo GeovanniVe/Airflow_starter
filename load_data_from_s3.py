@@ -5,6 +5,7 @@ import airflow.utils.dates
 import sys
 sys.path.append("/opt/airflow/dags/repo/custom_modules")
 
+from airflow.providers.amazon.aws.operators.emr_containers import EMRContainerOperator
 from s3_to_postgres import S3ToPostgresOperator
 from airflow.contrib.operators.s3_list_operator import S3ListOperator
 from airflow.operators.python import PythonOperator
@@ -50,6 +51,7 @@ CONFIGURATION_OVERRIDES_ARG = {
 
 def print_params_fn(**kwargs):
     import logging
+    import os
     logging.info("getting virtual cluster ID: {0}".format(os.getenv("VIRTUAL_CLUSTER_ID", "virtual_cluster_test")))
     logging.info("getting virtual cluster ID 2: {0}".format(os.getenv("VIRTUAL_CLUSTER_ID", "airflow-eks-data-bootcamp")))
     logging.info("{0}".format(os.environ))
