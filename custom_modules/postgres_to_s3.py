@@ -135,10 +135,8 @@ class PostgresToS3Operator(BaseOperator):
         Returns:
             None
         """
-        df = self.pg_to_pandas(context)
-        self.df_object_to_s3(df)
-        #         self.create_db_table(df_products)
-        # self.print_table()
+        source = self.pg_to_pandas(context)
+        self.df_object_to_s3(source)
 
     def pg_to_pandas(self, context):
         """
@@ -171,11 +169,11 @@ class PostgresToS3Operator(BaseOperator):
         cursor.execute(request)
         source = cursor.fetchall()
 
-        df = pd.DataFrame(source)
-        self.log.info("df: {0}".format(df))
-        return df
+        # df = pd.DataFrame(source)
+        # self.log.info("df: {0}".format(df))
+        return source
 
-    def df_object_to_s3(self, df):
+    def df_object_to_s3(self, source):
         """
         Converts s3 file into a string and dataframe.
 
@@ -204,77 +202,9 @@ class PostgresToS3Operator(BaseOperator):
             s3_key_bucket = self.s3.get_key(self.s3_key,
                                             self.s3_bucket)
         self.log.info("s3_key_bucket: {0}".format(s3_key_bucket))
-        self.log.info("loading file... {0}".format(type(df.to_string())))
-        self.s3.load_string(string_data=df.to_string(),
+        self.log.info("loading file... {0}".format(source))
+        self.s3.load_string(string_data=str(source),
                             key="user_purchase.csv",
                             bucket_name=self.s3_bucket,
                             replace=True)
 
-    def create_db_table(self, df_products):
-        """
-        Based on a .sql file it creates the table in the given database.
-
-        Args:
-            df_products: str
-                S3 file as a single string.
-        Returns:
-            None
-        """
-        file_path = 'dags/repo/debootcamp.products.sql'
-
-        self.log.info("all content: {0}".format(os.listdir()))
-
-        with open(file_path, "r", encoding="UTF-8") as sql_file:
-            sql_create_table_cmd = sql_file.read()
-            sql_file.close()
-
-            self.log.info("{0}".format(sql_create_table_cmd))
-
-        self.pg_hook.run(sql_create_table_cmd)
-
-        target_fields = ['InvoiceNo', 'StockCode', 'Description', 'Quantity',
-                         'InvoiceDate', 'UnitPrice', 'CustomerID', 'Country']
-
-        self.current_table = self.schema + '.' + self.table
-        df_row_list = [tuple(x) for x in df_products.to_numpy()]
-
-        # check table exist
-        try:
-            self.pg_hook.insert_rows(self.current_table, df_row_list,
-                                     target_fields=target_fields,
-                                     commit_every=1000,
-                                     replace=True)
-        except:
-            self.pg_hook.insert_rows(self.current_table, df_row_list,
-                                     target_fields=target_fields,
-                                     commit_every=1000,
-                                     replace=False)
-
-    def print_table(self):
-        """
-        Sends table row values to airflow logs.
-
-        Creates connection to db and executes query to get the complete table
-         created in past methods.
-
-        Returns:
-            None
-        """
-        request = "SELECT * FROM " + "debootcamp.products" + \
-                  " WHERE InvoiceNo = '536367' LIMIT 3"
-        connection = self.pg_hook.get_conn()
-        cursor = connection.cursor()
-        cursor.execute(request)
-        source = cursor.fetchall()
-
-        for row in source:
-            self.log.info("InvoiceNo: {0} - \
-                          StockCode: {1} - \
-                          Description: {2} - \
-                          Quantity: {3} - \
-                          InvoiceDate: {4} - \
-                          UnitPrice: {5} - \
-                          CustomerID: {6} - \
-                          Country: {7} ".
-                          format(row[0], row[1], row[2], row[3],
-                                 row[4], row[5], row[6], row[7]))
