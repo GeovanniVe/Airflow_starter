@@ -270,7 +270,7 @@ class S3ToPostgresOperator(BaseOperator):
         Returns:
             None
         """
-        request = "SELECT * FROM " + self.current_table +\
+        request = "SELECT * FROM " + "debootcamp.products" +\
                   " WHERE InvoiceNo = '536367'"
         connection = self.pg_hook.get_conn()
         cursor = connection.cursor()
