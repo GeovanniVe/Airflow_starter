@@ -135,8 +135,8 @@ class PostgresToS3Operator(BaseOperator):
         Returns:
             None
         """
-        source = self.pg_to_pandas(context)
-        self.df_object_to_s3(source)
+        df = self.pg_to_pandas(context)
+        self.df_object_to_s3(df)
 
     def pg_to_pandas(self, context):
         """
@@ -169,11 +169,11 @@ class PostgresToS3Operator(BaseOperator):
         cursor.execute(request)
         source = cursor.fetchall()
 
-        # df = pd.DataFrame(source)
-        # self.log.info("df: {0}".format(df))
-        return source
+        df = pd.DataFrame(source)
+        self.log.info("df: {0}".format(df))
+        return df
 
-    def df_object_to_s3(self, source):
+    def df_object_to_s3(self, df):
         """
         Converts s3 file into a string and dataframe.
 
@@ -202,8 +202,8 @@ class PostgresToS3Operator(BaseOperator):
             s3_key_bucket = self.s3.get_key(self.s3_key,
                                             self.s3_bucket)
         self.log.info("s3_key_bucket: {0}".format(s3_key_bucket))
-        self.log.info("loading file... {0}".format(source))
-        self.s3.load_string(string_data="ele 1, ele 2, ele 3\n ek1, ek2, ek3",
+        self.log.info("loading file... {0}".format(df))
+        self.s3.load_string(string_data=df.to_csv(index=False),
                             key="user_purchase.csv",
                             bucket_name=self.s3_bucket,
                             replace=True)
