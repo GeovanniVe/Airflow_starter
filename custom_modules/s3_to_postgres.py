@@ -226,7 +226,7 @@ class S3ToPostgresOperator(BaseOperator):
         Based on a .sql file it creates the table in the given database.
 
         Args:
-            list_content: str
+            df_products: str
                 S3 file as a single string.
         Returns:
             None
