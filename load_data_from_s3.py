@@ -99,7 +99,7 @@ with dag:
                                         aws_conn_id='aws_default',
                                         dag=dag)
     
-    pg_to_staging = S3ToPostgresOperator(task_id='dag_s3_to_postgres',
+    pg_to_staging = S3ToPostgresOperator(task_id='dag_postgres_to_s3',
                                         schema='debootcamp',
                                         table='products',
                                         s3_bucket='de-bootcamp-airflow-data',
