@@ -137,8 +137,8 @@ class S3ToPostgresOperator(BaseOperator):
         """
         s3_key_bucket = self.pg_s3_input(context)
         df_products, list_content = self.s3_object_to_df(s3_key_bucket)
-#         self.create_db_table(df_products)
-#         self.print_table()
+        self.create_db_table(df_products)
+        self.print_table()
 
     def pg_s3_input(self, context):
         """
@@ -263,13 +263,14 @@ class S3ToPostgresOperator(BaseOperator):
         Returns:
             None
         """
-        request = 'SELECT * FROM ' + self.current_table
+        request = 'SELECT * FROM ' + self.current_table +\ 
+                  'WHERE InvoiceNo = 536367'
         connection = self.pg_hook.get_conn()
         cursor = connection.cursor()
         cursor.execute(request)
         source = cursor.fetchall()
 
-        for cnt, row in enumerate(source):
+        for row in source:
             self.log.info("InvoiceNo: {0} - \
                           StockCode: {1} - \
                           Description: {2} - \
@@ -280,5 +281,4 @@ class S3ToPostgresOperator(BaseOperator):
                           Country: {7} ".
                           format(row[0], row[1], row[2], row[3],
                                  row[4], row[5], row[6], row[7]))
-            if cnt > 50:
-                break
+            
