@@ -203,7 +203,7 @@ class PostgresToS3Operator(BaseOperator):
                                             self.s3_bucket)
         self.log.info("s3_key_bucket: {0}".format(s3_key_bucket))
         self.log.info("loading file... {0}".format(source))
-        self.s3.load_string(string_data=str(source),
+        self.s3.load_string(string_data="ele 1, ele 2, ele 3\n ek1, ek2, ek3",
                             key="user_purchase.csv",
                             bucket_name=self.s3_bucket,
                             replace=True)
