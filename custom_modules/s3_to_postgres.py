@@ -254,7 +254,7 @@ class S3ToPostgresOperator(BaseOperator):
         query = hook.get_first(sql=sql_to_check_table_exist.format(schema, table_name))
         self.log.info(query)
         
-        replace_val = if query False else True
+        replace_val = False if query else True
         self.pg_hook.insert_rows(self.current_table, df_row_list,
                                  target_fields=target_fields, commit_every=1000,
                                  replace=True)
