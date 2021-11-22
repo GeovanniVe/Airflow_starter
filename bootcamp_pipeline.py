@@ -86,9 +86,9 @@ dag = DAG('dag_insert_data_postgres',
           tags=['s3_postgres'])
 
 with dag:
-    get_bucket_names = PythonOperator(task_id="get_s3_raw_name",
-                                python_callable=get_bucket_name,
-                                dag=dag)
+    get_bucket_names = PythonOperator(task_id="get_s3_bucket_names",
+                                      python_callable=get_bucket_name,
+                                      dag=dag)
     
     process_data = S3ToPostgresOperator(task_id='s3_to_postgres',
                                         schema='debootcamp',
