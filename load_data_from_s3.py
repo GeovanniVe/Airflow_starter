@@ -128,6 +128,7 @@ with dag:
     # [START howto_operator_emr_eks_jobrun]
     job_starter = EMRContainerOperator(
         task_id="start_job",
+        virtual_cluster_id='{{ conn.aws_default.extra_dejson["virtual_cluster_id"] }}'
         execution_role_arn=JOB_ROLE_ARN,
         configuration_overrides=CONFIGURATION_OVERRIDES_ARG,
         release_label="emr-6.3.0-latest",
