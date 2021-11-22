@@ -93,8 +93,7 @@ with dag:
     process_data = S3ToPostgresOperator(task_id='s3_to_postgres',
                                         schema='debootcamp',
                                         table='products',
-                                        s3_bucket='de-bootcamp-airflow-data',
-                                        s3_key='sample.csv',
+                                        s3_key='user_purchase.csv',
                                         postgres_conn_id='postgres_default',
                                         aws_conn_id='aws_default',
                                         dag=dag
