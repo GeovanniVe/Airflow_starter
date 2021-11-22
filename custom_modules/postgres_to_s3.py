@@ -145,18 +145,17 @@ class PostgresToS3Operator(BaseOperator):
 
     def pg_to_pandas(self, context):
         """
-        Method to read in both the Postgres and S3 hook objects.
+        Method to read a table from postgres to convert it into a pandas
+         dataframe.
 
-        Checks wildcard key and raises exception if there are no matches or it
-         does not exist.
+        Args:
+            context
+                Context of dags.custom_modules.s3_to_postgres.
+                S3ToPostgresOperator.execute
 
         Returns:
-            s3_key_bucket: boto3.s3.Object
-                Object matching the wildcard expression
-
-        Typical usage example:
-
-        self.pg_s3_input()
+            df: pandas dataframe
+              Dataframe with user_reviews table from postgres.
         """
         self.log.info('Starting execution')
         self.pg_hook = PostgresHook(postgres_conn_id=self.postgres_conn_id)
@@ -177,33 +176,14 @@ class PostgresToS3Operator(BaseOperator):
 
     def df_object_to_s3(self, df):
         """
-        Converts s3 file into a string and dataframe.
-
-        Prints the dataframe as a log in airflow.
+        Inserts dataframe to S3 as a csv file.
 
         Args:
-            s3_key_bucket
-                Context of dags.custom_modules.s3_to_postgres.
-                S3ToPostgresOperator.execute
+            df: pandas dataframe
+              Dataframe with user_reviews table from postgres.
         Returns:
-            df_products: df
-                S3 bucket file as a pandas dataframe.
-            list_content: str
-                S3 file as a single string.
+            None
         """
-        s3_key_bucket = None
-        if self.wildcard_match:
-            if self.s3.check_for_wildcard_key(self.s3_key, self.s3_bucket):
-                raise AirflowException('No key matches', self.s3_key)
-            s3_key_bucket = self.s3.get_wildcard_key(self.s3_key,
-                                                     self.s3_bucket)
-        else:
-            if not self.s3.check_for_key(self.s3_key, self.s3_bucket):
-                raise AirflowException("The key {0} does not exist".
-                                       format(self.s3_key))
-            s3_key_bucket = self.s3.get_key(self.s3_key,
-                                            self.s3_bucket)
-        self.log.info("s3_key_bucket: {0}".format(s3_key_bucket))
         self.log.info("loading file... {0}".format(df))
         self.s3.load_string(string_data=df.to_csv(index=False),
                             key="user_purchase.csv",
