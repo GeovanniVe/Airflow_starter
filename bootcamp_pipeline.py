@@ -2,7 +2,7 @@ from datetime import timedelta
 from airflow import DAG
 import airflow.utils.dates
 
-# append custom modules to path. If this is not done logs will not show up
+# Append custom modules to path. If this is not done logs will not show up
 # possibly due to a timeout
 import sys
 sys.path.append("/opt/airflow/dags/repo/custom_modules")
@@ -57,10 +57,19 @@ CONFIGURATION_OVERRIDES_ARG = {
 # [END EMRContainerOperator config]
 
 def get_bucket_name():
+    """
+    Reads the bucket names in S3.
+    
+    Gets the raw and staging layer buckets' full name and assigns them 
+        to a dictionary.
+     
+    Returns:
+        buckets: dict
+          Dictionary with the name of the raw and staging layer buckets.
+    """
     from airflow.providers.amazon.aws.hooks.base_aws import AwsBaseHook
     s3 = AwsBaseHook(aws_conn_id="aws_default", client_type="s3")
-    s3_c = s3.conn
-    response = s3_c.list_buckets()
+    response = s3.conn.list_buckets()
     bucket_names = [bucket["Name"] for bucket in response["Buckets"]]
     raw_name = ""
     staging_name = ""
@@ -69,8 +78,8 @@ def get_bucket_name():
             raw_name = i
         if i.startswith("staging-layer"):
             staging_name = i
-            
-    return {"raw": raw_name, "staging": staging_name}
+    buckets = {"raw": raw_name, "staging": staging_name} 
+    return buckets
 
 default_args = {
     'owner': 'geovanni.velazquez',
@@ -90,6 +99,9 @@ with dag:
                                       python_callable=get_bucket_name,
                                       dag=dag)
     
+    # Save raw data to postgres from the user_purchase.csv file. Afterwards
+    # the same data is extracted from postgres and sent to the staging layer
+    # bucket created with terraform.
     process_data = S3ToPostgresOperator(task_id='s3_to_postgres',
                                         schema='debootcamp',
                                         table='products',
@@ -109,7 +121,9 @@ with dag:
                                          dag=dag
                                          )
 
-    # [START howto_operator_emr_eks_jobrun]
+    # Classifies the movie_reviews.csv file by looking for the word "good".
+    # Assigns a 1 if the word is found else a 0. Saves file with cid and 
+    # class (called the "positivity" column) columns only.
     reviews_job = EMRContainerOperator(
         task_id="movie_reviews_classification",
         virtual_cluster_id=virtual_cluster_id,
@@ -119,7 +133,8 @@ with dag:
         job_driver=JOB_DRIVER_ARG,
         name="movie_reviews.py"
     )
-    # [END howto_operator_emr_eks_jobrun]
+    
+    # fan out after getting the names of the buckets created with terraform
     get_bucket_names >> [process_data, reviews_job]
 
     process_data >> pg_to_staging 
