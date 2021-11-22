@@ -77,7 +77,7 @@ with dag:
 
     get_staging_key = S3ListOperator(task_id='get_staging_s3_key',
                                      bucket="de-bootcamp-airflow-data",
-                                     prefix='raw-layer',
+                                     prefix='staging-layer',
                                      aws_conn_id='aws_default')
 
     process_data = S3ToPostgresOperator(task_id='s3_to_postgres',
