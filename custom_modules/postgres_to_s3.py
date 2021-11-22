@@ -18,11 +18,7 @@ AVAILABLE_METHODS = ['APPEND', 'REPLACE', 'UPSERT']
 
 class PostgresToS3Operator(BaseOperator):
     """
-    Executes a COPY command to load files from s3 to Postgres
-
-    .. seealso::
-        For more information on how to use this operator, take a look at the
-        guide: :ref:`howto/operator:S3ToRedshiftOperator`
+    Executes a COPY command to load a file from Postgres to S3
 
     Args:
         schema: str
