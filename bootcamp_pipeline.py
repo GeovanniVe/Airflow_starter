@@ -70,7 +70,7 @@ def get_bucket_name(layer):
         if (layer == "staging") and i.startswith("staging-layer"):
             staging_name = i
             
-    return {"raw": raw_name, "staging", staging_name}
+    return {"raw": raw_name, "staging": staging_name}
 
 default_args = {
     'owner': 'geovanni.velazquez',
