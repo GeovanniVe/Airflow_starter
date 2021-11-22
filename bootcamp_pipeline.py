@@ -75,7 +75,7 @@ with dag:
                                  prefix='raw-layer',
                                  aws_conn_id='aws_default')
 
-    get_staging_key = S3ListOperator(task_id='get_raw_s3_key',
+    get_staging_key = S3ListOperator(task_id='get_staging_s3_key',
                                      bucket="de-bootcamp-airflow-data",
                                      prefix='raw-layer',
                                      aws_conn_id='aws_default')
