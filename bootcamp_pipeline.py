@@ -63,6 +63,7 @@ def get_bucket_name():
     buckets = s3.get_all_buckets() 
     for key in buckets:
         logging.log.info("buckets: {0}".format(key))
+    return buckets
 
 default_args = {
     'owner': 'geovanni.velazquez',
@@ -78,15 +79,15 @@ dag = DAG('dag_insert_data_postgres',
           tags=['s3_postgres'])
 
 with dag:
-    get_raw_key = S3ListOperator(task_id='get_raw_s3_key',
-                                 prefix='raw-layer',
-                                 aws_conn_id='aws_default')
+    get_raw_key = PythonOperator(task_id="get_s3_raw_name",
+                                python_callable=get_bucket_name,
+                                dag=dag)
 
     get_staging_key = S3ListOperator(task_id='get_staging_s3_key',
                                      bucket="de-bootcamp-airflow-data",
                                      prefix='staging-layer',
                                      aws_conn_id='aws_default')
-
+    
     process_data = S3ToPostgresOperator(task_id='s3_to_postgres',
                                         schema='debootcamp',
                                         table='products',
