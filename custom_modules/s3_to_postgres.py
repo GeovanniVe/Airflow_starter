@@ -131,6 +131,9 @@ class S3ToPostgresOperator(BaseOperator):
         Returns:
             None
         """
+        task_instance = context['task_instance']
+        value = task_instance.xcom_pull(task_ids='return_value')
+        self.s3_bucket = value["raw"]
         s3_key_bucket = self.pg_s3_input(context)
         df_products, list_content = self.s3_object_to_df(s3_key_bucket)
 #         self.create_db_table(df_products)
@@ -156,8 +159,7 @@ class S3ToPostgresOperator(BaseOperator):
         self.s3 = S3Hook(aws_conn_id=self.aws_conn_id, verify=self.verify)
 
         self.log.info("Downloading S3 file: {0}".format(self.s3))
-        task_instance = context['task_instance']
-        value = task_instance.xcom_pull(task_ids='list_3s_files')
+        
         self.log.info("file name: {0}".format(value))
         
         s3_key_bucket = None
