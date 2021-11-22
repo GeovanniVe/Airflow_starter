@@ -65,9 +65,9 @@ def get_bucket_name():
     raw_name = ""
     staging_name = ""
     for i in bucket_names:
-        if (layer == "raw") and i.startswith("raw-layer"):
+        if i.startswith("raw-layer"):
             raw_name = i
-        if (layer == "staging") and i.startswith("staging-layer"):
+        if i.startswith("staging-layer"):
             staging_name = i
             
     return {"raw": raw_name, "staging": staging_name}
