@@ -63,7 +63,7 @@ def get_bucket_name():
     s3_c = s3.conn
     response = s3_c.list_buckets()
     logging.info("response type: {0}".format(response["Buckets"]))
-    logging.info("response type: {0}".format(response["Buckets"]["Name"]))
+    logging.info("response type: {0}".format([b["Name"] for b in response["Buckets"]]))
     logging.info("{0}".format(response))
 #     s3 = boto3.resource('s3')
 #     for bucket in s3.buckets.all():
