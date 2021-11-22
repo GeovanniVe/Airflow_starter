@@ -59,7 +59,7 @@ CONFIGURATION_OVERRIDES_ARG = {
 def get_bucket_name():
     import logging
     from airflow.providers.amazon.aws.hooks.base_aws import AwsBaseHook
-    s3 = AwsBaseHook(aws_conn_id="aws_default")
+    s3 = AwsBaseHook(aws_conn_id="aws_default", client_type="s3")
     s3 = s3.conn()
     response = s3.list_buckets()
     logging.info("{0}".format(response))
