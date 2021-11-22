@@ -57,13 +57,9 @@ CONFIGURATION_OVERRIDES_ARG = {
 # [END EMRContainerOperator config]
 
 def get_bucket_name():
-    import sys
-    import logging
-    logging.info("buckets: {0}".format(sys.path))
-    
-    import boto
-    from boto.s3.connection import S3Connection
-    s3 = boto.connect_s3()  
+    import boto3
+    from boto3.s3.connection import S3Connection
+    s3 = boto3.connect_s3()  
     buckets = s3.get_all_buckets() 
     for key in buckets:
         logging.log.info("buckets: {0}".format(key))
