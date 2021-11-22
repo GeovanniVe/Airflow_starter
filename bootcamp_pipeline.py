@@ -12,6 +12,7 @@ from airflow.providers.amazon.aws.operators.emr_containers import \
 from s3_to_postgres import S3ToPostgresOperator
 from postgres_to_s3 import PostgresToS3Operator
 from airflow.contrib.operators.s3_list_operator import S3ListOperator
+from airflow.operators.python import PythonOperator
 
 
 # [START EMRContainer operator variables]
