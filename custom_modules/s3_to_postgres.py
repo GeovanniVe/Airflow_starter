@@ -68,7 +68,7 @@ class S3ToPostgresOperator(BaseOperator):
             *,
             schema: str,
             table: str,
-            s3_bucket: str,
+            s3_bucket = None,
             s3_key: str,
             postgres_conn_id: str = 'postgres_default',
             aws_conn_id: str = 'aws_default',
