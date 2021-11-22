@@ -57,10 +57,15 @@ CONFIGURATION_OVERRIDES_ARG = {
 # [END EMRContainerOperator config]
 
 def get_bucket_name():
-    import boto3
-    s3 = boto3.resource('s3')
-    for bucket in s3.buckets.all():
-        logging.log.info("buckets: {0}".format(bucket))
+    import logging
+    from airflow.providers.amazon.aws.hooks.base_aws import AwsBaseHook
+    s3 = AwsBaseHook(aws_conn_id=aws_default)
+    s3 = s3.conn()
+    response = s3.list_buckets()
+    logging.info("{0}".format(response))
+#     s3 = boto3.resource('s3')
+#     for bucket in s3.buckets.all():
+#         logging.log.info("buckets: {0}".format(bucket))
     return buckets
 
 default_args = {
