@@ -59,7 +59,7 @@ CONFIGURATION_OVERRIDES_ARG = {
 def get_bucket_name():
     import sys
     import logging
-    logging.log.info("buckets: {0}".format(sys.path))
+    logging.info("buckets: {0}".format(sys.path))
     
     import boto
     from boto.s3.connection import S3Connection
