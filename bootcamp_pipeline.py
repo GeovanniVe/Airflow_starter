@@ -56,19 +56,15 @@ CONFIGURATION_OVERRIDES_ARG = {
 }
 # [END EMRContainerOperator config]
 
-def get_bucket_name():
-    import logging
+def get_raw_bucket_name():
     from airflow.providers.amazon.aws.hooks.base_aws import AwsBaseHook
     s3 = AwsBaseHook(aws_conn_id="aws_default", client_type="s3")
     s3_c = s3.conn
     response = s3_c.list_buckets()
-    logging.info("response type: {0}".format(response["Buckets"]))
-    logging.info("response type: {0}".format([b["Name"] for b in response["Buckets"]]))
-    logging.info("{0}".format(response))
-#     s3 = boto3.resource('s3')
-#     for bucket in s3.buckets.all():
-#         logging.log.info("buckets: {0}".format(bucket))
-    return buckets
+    bucket_names = [bucket["Name"] for bucket in response["Buckets"]]
+    for i in bucket_names:
+        if i.startswith("raw-layer"):
+            return i
 
 default_args = {
     'owner': 'geovanni.velazquez',
