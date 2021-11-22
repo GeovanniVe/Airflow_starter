@@ -132,7 +132,7 @@ class S3ToPostgresOperator(BaseOperator):
             None
         """
         task_instance = context['task_instance']
-        value = task_instance.xcom_pull(task_ids='return_value')
+        value = task_instance.xcom_pull(task_ids="get_s3_bucket_names")
         self.s3_bucket = value["raw"]
         s3_key_bucket = self.pg_s3_input(context)
         df_products, list_content = self.s3_object_to_df(s3_key_bucket)
