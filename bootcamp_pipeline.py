@@ -56,7 +56,7 @@ CONFIGURATION_OVERRIDES_ARG = {
 }
 # [END EMRContainerOperator config]
 
-def get_bucket_name(layer):
+def get_bucket_name():
     from airflow.providers.amazon.aws.hooks.base_aws import AwsBaseHook
     s3 = AwsBaseHook(aws_conn_id="aws_default", client_type="s3")
     s3_c = s3.conn
