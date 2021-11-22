@@ -58,11 +58,9 @@ CONFIGURATION_OVERRIDES_ARG = {
 
 def get_bucket_name():
     import boto3
-    from boto3.s3.connection import S3Connection
-    s3 = boto3.connect_s3()  
-    buckets = s3.get_all_buckets() 
-    for key in buckets:
-        logging.log.info("buckets: {0}".format(key))
+    s3 = boto3.resource('s3')
+    for bucket in s3.buckets.all()::
+        logging.log.info("buckets: {0}".format(bucket))
     return buckets
 
 default_args = {
