@@ -60,7 +60,7 @@ def get_bucket_name():
     import logging
     from airflow.providers.amazon.aws.hooks.base_aws import AwsBaseHook
     s3 = AwsBaseHook(aws_conn_id="aws_default", client_type="s3")
-    s3_c = s3.conn()
+    s3_c = s3.conn
     response = s3_c.list_buckets()
     logging.info("{0}".format(response))
 #     s3 = boto3.resource('s3')
