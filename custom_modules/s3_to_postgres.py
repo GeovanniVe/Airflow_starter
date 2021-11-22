@@ -160,8 +160,6 @@ class S3ToPostgresOperator(BaseOperator):
 
         self.log.info("Downloading S3 file: {0}".format(self.s3))
         
-        self.log.info("file name: {0}".format(value))
-        
         s3_key_bucket = None
         if self.wildcard_match:
             if self.s3.check_for_wildcard_key(self.s3_key, self.s3_bucket):
