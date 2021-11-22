@@ -71,7 +71,6 @@ dag = DAG('dag_insert_data_postgres',
 
 with dag:
     get_raw_key = S3ListOperator(task_id='get_raw_s3_key',
-                                 bucket="de-bootcamp-airflow-data",
                                  prefix='raw-layer',
                                  aws_conn_id='aws_default')
 
