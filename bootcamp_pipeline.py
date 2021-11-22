@@ -83,11 +83,11 @@ dag = DAG('dag_insert_data_postgres',
 
 with dag:
     get_raw_key = PythonOperator(task_id="get_s3_raw_name",
-                                python_callable=get_raw_bucket_name("raw"),
+                                python_callable=get_bucket_name("raw"),
                                 dag=dag)
 
     get_staging_key = PythonOperator(task_id="get_s3_staging_name",
-                                    python_callable=get_raw_bucket_name("staging"),
+                                    python_callable=get_bucket_name("staging"),
                                     dag=dag)
     
     process_data = S3ToPostgresOperator(task_id='s3_to_postgres',
