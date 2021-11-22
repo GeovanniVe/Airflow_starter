@@ -56,14 +56,16 @@ CONFIGURATION_OVERRIDES_ARG = {
 }
 # [END EMRContainerOperator config]
 
-def get_raw_bucket_name():
+def get_bucket_name(layer):
     from airflow.providers.amazon.aws.hooks.base_aws import AwsBaseHook
     s3 = AwsBaseHook(aws_conn_id="aws_default", client_type="s3")
     s3_c = s3.conn
     response = s3_c.list_buckets()
     bucket_names = [bucket["Name"] for bucket in response["Buckets"]]
     for i in bucket_names:
-        if i.startswith("raw-layer"):
+        if (layer == "raw") and i.startswith("raw-layer"):
+            return i
+        if (layer == "staging") and i.startswith("staging-layer"):
             return i
 
 default_args = {
@@ -81,13 +83,12 @@ dag = DAG('dag_insert_data_postgres',
 
 with dag:
     get_raw_key = PythonOperator(task_id="get_s3_raw_name",
-                                python_callable=get_raw_bucket_name,
+                                python_callable=get_raw_bucket_name("raw"),
                                 dag=dag)
 
-    get_staging_key = S3ListOperator(task_id='get_staging_s3_key',
-                                     bucket="de-bootcamp-airflow-data",
-                                     prefix='staging-layer',
-                                     aws_conn_id='aws_default')
+    get_staging_key = PythonOperator(task_id="get_s3_staging_name",
+                                    python_callable=get_raw_bucket_name("staging"),
+                                    dag=dag)
     
     process_data = S3ToPostgresOperator(task_id='s3_to_postgres',
                                         schema='debootcamp',
