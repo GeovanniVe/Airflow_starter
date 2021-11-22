@@ -62,11 +62,15 @@ def get_bucket_name(layer):
     s3_c = s3.conn
     response = s3_c.list_buckets()
     bucket_names = [bucket["Name"] for bucket in response["Buckets"]]
+    raw_name = ""
+    staging_name = ""
     for i in bucket_names:
         if (layer == "raw") and i.startswith("raw-layer"):
-            return i
+            raw_name = i
         if (layer == "staging") and i.startswith("staging-layer"):
-            return i
+            staging_name = i
+            
+    return {"raw": raw_name, "staging", staging_name}
 
 default_args = {
     'owner': 'geovanni.velazquez',
@@ -82,13 +86,9 @@ dag = DAG('dag_insert_data_postgres',
           tags=['s3_postgres'])
 
 with dag:
-    get_raw_key = PythonOperator(task_id="get_s3_raw_name",
-                                python_callable=get_bucket_name("raw"),
+    get_bucket_names = PythonOperator(task_id="get_s3_raw_name",
+                                python_callable=get_bucket_name,
                                 dag=dag)
-
-    get_staging_key = PythonOperator(task_id="get_s3_staging_name",
-                                    python_callable=get_bucket_name("staging"),
-                                    dag=dag)
     
     process_data = S3ToPostgresOperator(task_id='s3_to_postgres',
                                         schema='debootcamp',
@@ -121,6 +121,6 @@ with dag:
         name="movie_reviews.py"
     )
     # [END howto_operator_emr_eks_jobrun]
-    get_raw_key >> get_staging_key >> [process_data, reviews_job]
+    get_bucket_names >> [process_data, reviews_job]
 
     process_data >> pg_to_staging 
