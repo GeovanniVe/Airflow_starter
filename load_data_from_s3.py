@@ -117,7 +117,7 @@ with dag:
 
 
     # An example of how to get the cluster id and arn from an Airflow connection
-    # VIRTUAL_CLUSTER_ID = '{{ conn.emr_eks.extra_dejson["virtual_cluster_id"] }}'
+    # VIRTUAL_CLUSTER_ID = '{{ conn.aws_default.extra_dejson["virtual_cluster_id"] }}'
     # JOB_ROLE_ARN = '{{ conn.emr_eks.extra_dejson["job_role_arn"] }}'
     
     print_path = PythonOperator(task_id="print_path",
@@ -128,7 +128,7 @@ with dag:
     # [START howto_operator_emr_eks_jobrun]
     job_starter = EMRContainerOperator(
         task_id="start_job",
-        virtual_cluster_id='{{ conn.aws_default.extra_dejson["virtual_cluster_id"] }}',
+        virtual_cluster_id="b8fvcxoj8arw17q57wjb9uyqc",
         execution_role_arn=JOB_ROLE_ARN,
         configuration_overrides=CONFIGURATION_OVERRIDES_ARG,
         release_label="emr-6.3.0-latest",
