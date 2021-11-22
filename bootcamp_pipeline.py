@@ -55,6 +55,14 @@ CONFIGURATION_OVERRIDES_ARG = {
 }
 # [END EMRContainerOperator config]
 
+def get_bucket_name():
+    import boto
+    from boto.s3.connection import S3Connection
+    import logging
+    s3 = boto.connect_s3()  
+    buckets = s3.get_all_buckets() 
+    for key in buckets:
+        logging.log.info("buckets: {0}".format(key))
 
 default_args = {
     'owner': 'geovanni.velazquez',
