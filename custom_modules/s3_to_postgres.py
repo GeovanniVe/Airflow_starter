@@ -20,10 +20,6 @@ class S3ToPostgresOperator(BaseOperator):
     """
     Executes a COPY command to load files from s3 to Postgres
 
-    .. seealso::
-        For more information on how to use this operator, take a look at the
-        guide: :ref:`howto/operator:S3ToRedshiftOperator`
-
     Args:
         schema: str
             reference to a specific schema in redshift database.
