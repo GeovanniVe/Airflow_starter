@@ -62,7 +62,8 @@ def get_bucket_name():
     s3 = AwsBaseHook(aws_conn_id="aws_default", client_type="s3")
     s3_c = s3.conn
     response = s3_c.list_buckets()
-    logging.info("response type: {0}".format(type(response)))
+    logging.info("response type: {0}".format(response["Buckets"]))
+    logging.info("response type: {0}".format(response["Buckets"]["Name"]))
     logging.info("{0}".format(response))
 #     s3 = boto3.resource('s3')
 #     for bucket in s3.buckets.all():
