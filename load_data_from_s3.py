@@ -11,7 +11,7 @@ from postgres_to_s3 import PostgresToS3Operator
 from airflow.contrib.operators.s3_list_operator import S3ListOperator
 from airflow.operators.python import PythonOperator
 import os
-os.environ["AWS_DEFAULT_REGION"] = "us-east-2"
+# os.environ["AWS_DEFAULT_REGION"] = "us-east-2"
 
 # [START howto_operator_emr_eks_env_variables]
 VIRTUAL_CLUSTER_ID = "knk7mbdpb9m63ockfv5e59pg1"  # os.getenv("VIRTUAL_CLUSTER_ID", "virtual_cluster_test")
