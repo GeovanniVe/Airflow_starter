@@ -7,11 +7,8 @@ from airflow.models import BaseOperator
 from airflow.providers.amazon.aws.hooks.s3 import S3Hook
 from airflow.providers.amazon.aws.utils.redshift import build_credentials_block
 from airflow.providers.postgres.hooks.postgres import PostgresHook
-from airflow.contrib.operators.s3_list_operator import S3ListOperator
+
 import pandas as pd
-import io
-import os.path
-import numpy as np
 
 AVAILABLE_METHODS = ['APPEND', 'REPLACE', 'UPSERT']
 
@@ -131,11 +128,12 @@ class PostgresToS3Operator(BaseOperator):
         Returns:
             None
         """
+        # get staging layer unique bucket name in XCom
         task_instance = context['task_instance']
         value = task_instance.xcom_pull(task_ids="get_s3_bucket_names")
         self.s3_bucket = value["staging"]
         self.log.info("bucket name: {0}".format(value))
-        
+
         df = self.pg_to_pandas(context)
         self.df_object_to_s3(df)
 
@@ -158,9 +156,8 @@ class PostgresToS3Operator(BaseOperator):
         self.s3 = S3Hook(aws_conn_id=self.aws_conn_id, verify=self.verify)
 
         self.log.info("Downloading Postgres table: {0}".format(self.s3))
-
-        request = "SELECT * FROM " + "debootcamp.products" + \
-                  " WHERE InvoiceNo = '536367' LIMIT 3"
+        self.current_table = self.schema + '.' + self.table
+        request = "SELECT * FROM " + self.current_table
         connection = self.pg_hook.get_conn()
         cursor = connection.cursor()
         cursor.execute(request)
@@ -185,4 +182,3 @@ class PostgresToS3Operator(BaseOperator):
                             key="user_purchase.csv",
                             bucket_name=self.s3_bucket,
                             replace=True)
-
