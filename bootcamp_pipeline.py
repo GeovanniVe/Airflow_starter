@@ -37,6 +37,12 @@ JOB_DRIVER_ARG = {
     }
 }
 
+# create job parameters for second spark job which calculates the user behaviour
+# metrics logic
+ANALYSIS_JOB_ARG = JOB_DRIVER_ARG.copy()
+script_path = "s3://spark-test-samp/classify_reviews.py"
+ANALYSIS_JOB_ARG["sparkSubmitJobDriver"]["entryPoint"] = script_path
+
 CONFIGURATION_OVERRIDES_ARG = {
     "applicationConfiguration": [
         {
@@ -81,6 +87,7 @@ def get_bucket_name():
         elif i.startswith("staging-layer"):
             buckets["staging"] = i
     return buckets
+
 
 # DAG Start
 # ----------------------------------------------------------------------------
@@ -138,6 +145,17 @@ with dag:
     )
 
     # fan out after getting the names of the buckets created with terraform
-    get_bucket_names >> [process_data, reviews_job]
+    get_bucket_names >> process_data >> pg_to_staging
+    reviews_job
 
-    process_data >> pg_to_staging
+    analysis_job = EMRContainerOperator(
+        task_id="user_behavior_metrics_logic",
+        virtual_cluster_id=virtual_cluster_id,
+        execution_role_arn=JOB_ROLE_ARN,
+        configuration_overrides=CONFIGURATION_OVERRIDES_ARG,
+        release_label="emr-6.3.0-latest",
+        job_driver=JOB_DRIVER_ARG,
+        name="metrics_logic.py"
+    )
+
+    [pg_to_staging, reviews_job] >> analysis_job
