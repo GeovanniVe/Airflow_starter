@@ -162,6 +162,13 @@ class PostgresToS3Operator(BaseOperator):
         cursor = connection.cursor()
         cursor.execute(request)
         source = cursor.fetchall()
+        
+        request_cols = "SELECT * FROM information_schema.columns"
+                       "WHERE table_schema = 'debootcamp'"
+                       "AND table_name = 'products';"
+        cursor.execute(request_cols)
+        cols = cursor.fetchall()
+        self.log.info("columns: {0}".format(cols))
 
         df = pd.DataFrame(source)
         self.log.info("df: {0}".format(df))
