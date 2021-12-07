@@ -157,8 +157,9 @@ class PostgresToS3Operator(BaseOperator):
 
         self.log.info("Downloading Postgres table: {0}".format(self.s3))
         self.current_table = self.schema + '.' + self.table
-        request = "COPY " + self.current_table + 
-                  " TO 'C:\tmp\persons_db.csv' DELIMITER ',' CSV HEADER;"
+        request = "COPY " + self.current_table + \
+                  " TO 's3://" + self.s3_bucket + \
+                  "/metrics_logic.csv' DELIMITER ',' CSV HEADER;"
         connection = self.pg_hook.get_conn()
         cursor = connection.cursor()
         cursor.execute(request)
