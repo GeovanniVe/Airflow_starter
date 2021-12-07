@@ -163,8 +163,8 @@ class PostgresToS3Operator(BaseOperator):
         cursor.execute(request)
         source = cursor.fetchall()
         
-        request_cols = "SELECT * FROM information_schema.columns"
-                       "WHERE table_schema = 'debootcamp'"
+        request_cols = "SELECT * FROM information_schema.columns " \
+                       "WHERE table_schema = 'debootcamp' " \
                        "AND table_name = 'products';"
         cursor.execute(request_cols)
         cols = cursor.fetchall()
