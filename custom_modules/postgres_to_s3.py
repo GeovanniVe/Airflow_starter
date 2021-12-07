@@ -171,7 +171,7 @@ class PostgresToS3Operator(BaseOperator):
         cols = [k[3] for k in cols]
         self.log.info("columns: {0}".format(cols))
 
-        df = pd.DataFrame(source)
+        df = pd.DataFrame(source, columns=cols)
         self.log.info("df: {0}".format(df))
         return df
 
