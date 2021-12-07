@@ -135,7 +135,7 @@ class PostgresToS3Operator(BaseOperator):
         self.log.info("bucket name: {0}".format(value))
 
         df = self.pg_to_pandas(context)
-        self.df_object_to_s3(df)
+#         self.df_object_to_s3(df)
 
     def pg_to_pandas(self, context):
         """
@@ -157,15 +157,16 @@ class PostgresToS3Operator(BaseOperator):
 
         self.log.info("Downloading Postgres table: {0}".format(self.s3))
         self.current_table = self.schema + '.' + self.table
-        request = "SELECT * FROM " + self.current_table
+        request = "COPY " + self.current_table + 
+                  " TO 'C:\tmp\persons_db.csv' DELIMITER ',' CSV HEADER;"
         connection = self.pg_hook.get_conn()
         cursor = connection.cursor()
         cursor.execute(request)
-        source = cursor.fetchall()
+#         source = cursor.fetchall()
 
-        df = pd.DataFrame(source)
-        self.log.info("df: {0}".format(df))
-        return df
+#         df = pd.DataFrame(source)
+#         self.log.info("df: {0}".format(df))
+#         return df
 
     def df_object_to_s3(self, df):
         """
