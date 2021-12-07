@@ -146,16 +146,16 @@ with dag:
 
     # fan out after getting the names of the buckets created with terraform
     get_bucket_names >> process_data >> pg_to_staging
-    reviews_job
+#     reviews_job
 
-    analysis_job = EMRContainerOperator(
-        task_id="user_behavior_metrics_logic",
-        virtual_cluster_id=virtual_cluster_id,
-        execution_role_arn=JOB_ROLE_ARN,
-        configuration_overrides=CONFIGURATION_OVERRIDES_ARG,
-        release_label="emr-6.3.0-latest",
-        job_driver=JOB_DRIVER_ARG,
-        name="metrics_logic.py"
-    )
+#     analysis_job = EMRContainerOperator(
+#         task_id="user_behavior_metrics_logic",
+#         virtual_cluster_id=virtual_cluster_id,
+#         execution_role_arn=JOB_ROLE_ARN,
+#         configuration_overrides=CONFIGURATION_OVERRIDES_ARG,
+#         release_label="emr-6.3.0-latest",
+#         job_driver=JOB_DRIVER_ARG,
+#         name="metrics_logic.py"
+#     )
 
-    [pg_to_staging, reviews_job] >> analysis_job
+#     [pg_to_staging, reviews_job] >> analysis_job
