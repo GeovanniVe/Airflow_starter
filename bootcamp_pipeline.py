@@ -134,15 +134,15 @@ with dag:
     # Classifies the movie_reviews.csv file by looking for the word "good".
     # Assigns a 1 if the word is found else a 0. Saves file with cid and
     # class (called the "positivity" column) columns only.
-    reviews_job = EMRContainerOperator(
-        task_id="movie_reviews_classification",
-        virtual_cluster_id=virtual_cluster_id,
-        execution_role_arn=JOB_ROLE_ARN,
-        configuration_overrides=CONFIGURATION_OVERRIDES_ARG,
-        release_label="emr-6.3.0-latest",
-        job_driver=JOB_DRIVER_ARG,
-        name="movie_reviews.py"
-    )
+#     reviews_job = EMRContainerOperator(
+#         task_id="movie_reviews_classification",
+#         virtual_cluster_id=virtual_cluster_id,
+#         execution_role_arn=JOB_ROLE_ARN,
+#         configuration_overrides=CONFIGURATION_OVERRIDES_ARG,
+#         release_label="emr-6.3.0-latest",
+#         job_driver=JOB_DRIVER_ARG,
+#         name="movie_reviews.py"
+#     )
 
     # fan out after getting the names of the buckets created with terraform
     get_bucket_names >> process_data >> pg_to_staging
