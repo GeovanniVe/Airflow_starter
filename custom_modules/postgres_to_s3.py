@@ -168,6 +168,7 @@ class PostgresToS3Operator(BaseOperator):
                        "AND table_name = 'products';"
         cursor.execute(request_cols)
         cols = cursor.fetchall()
+        cols = [k[3] for k in cols]
         self.log.info("columns: {0}".format(cols))
 
         df = pd.DataFrame(source)
