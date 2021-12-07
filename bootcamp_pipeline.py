@@ -40,7 +40,7 @@ JOB_DRIVER_ARG = {
 # create job parameters for second spark job which calculates the user behaviour
 # metrics logic
 ANALYSIS_JOB_ARG = JOB_DRIVER_ARG.copy()
-script_path = "s3://spark-test-samp/classify_reviews.py"
+script_path = "s3://spark-test-samp/metrics_logic.py"
 ANALYSIS_JOB_ARG["sparkSubmitJobDriver"]["entryPoint"] = script_path
 
 CONFIGURATION_OVERRIDES_ARG = {
