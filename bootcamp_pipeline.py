@@ -29,7 +29,7 @@ spark_image = "855157247171.dkr.ecr.us-east-2.amazonaws.com/emr6.3_custom_repo"
 # [START EMRContainerOperator config]
 JOB_DRIVER_ARG = {
     "sparkSubmitJobDriver": {
-        "entryPoint": "s3://spark-test-samp/classify_reviews.py",
+        "entryPoint": "s3://raw-layer20211122002502098100000004/classify_reviews.py",
         "sparkSubmitParameters": "--conf spark.executors.instances=2"
                                  " --conf spark.executors.memory=2G"
                                  " --conf spark.executor.cores=2"
@@ -40,7 +40,7 @@ JOB_DRIVER_ARG = {
 # create job parameters for second spark job which calculates the user behaviour
 # metrics logic
 ANALYSIS_JOB_ARG = JOB_DRIVER_ARG.copy()
-script_path = "s3://spark-test-samp/metrics_logic.py"
+script_path = "s3://raw-layer20211122002502098100000004/metrics_logic.py"
 ANALYSIS_JOB_ARG["sparkSubmitJobDriver"]["entryPoint"] = script_path
 
 CONFIGURATION_OVERRIDES_ARG = {
@@ -112,14 +112,14 @@ with dag:
     # Save raw data to postgres from the user_purchase.csv file. Afterwards
     # the same data is extracted from postgres and sent to the staging layer
     # bucket created with terraform.
-#     process_data = S3ToPostgresOperator(task_id='s3_to_postgres',
-#                                         schema='debootcamp',
-#                                         table='products',
-#                                         s3_key='user_purchase.csv',
-#                                         postgres_conn_id='postgres_default',
-#                                         aws_conn_id='aws_default',
-#                                         dag=dag
-#                                         )
+    process_data = S3ToPostgresOperator(task_id='s3_to_postgres',
+                                        schema='debootcamp',
+                                        table='products',
+                                        s3_key='user_purchase.csv',
+                                        postgres_conn_id='postgres_default',
+                                        aws_conn_id='aws_default',
+                                        dag=dag
+                                        )
 
     pg_to_staging = PostgresToS3Operator(task_id='postgres_to_staging_layer',
                                          schema='debootcamp',
@@ -134,28 +134,28 @@ with dag:
     # Classifies the movie_reviews.csv file by looking for the word "good".
     # Assigns a 1 if the word is found else a 0. Saves file with cid and
     # class (called the "positivity" column) columns only.
-#     reviews_job = EMRContainerOperator(
-#         task_id="movie_reviews_classification",
-#         virtual_cluster_id=virtual_cluster_id,
-#         execution_role_arn=JOB_ROLE_ARN,
-#         configuration_overrides=CONFIGURATION_OVERRIDES_ARG,
-#         release_label="emr-6.3.0-latest",
-#         job_driver=JOB_DRIVER_ARG,
-#         name="movie_reviews.py"
-#     )
+    reviews_job = EMRContainerOperator(
+        task_id="movie_reviews_classification",
+        virtual_cluster_id=virtual_cluster_id,
+        execution_role_arn=JOB_ROLE_ARN,
+        configuration_overrides=CONFIGURATION_OVERRIDES_ARG,
+        release_label="emr-6.3.0-latest",
+        job_driver=JOB_DRIVER_ARG,
+        name="movie_reviews.py"
+    )
 
     # fan out after getting the names of the buckets created with terraform
     get_bucket_names  >> pg_to_staging
-#     reviews_job
+    reviews_job
 
-#     analysis_job = EMRContainerOperator(
-#         task_id="user_behavior_metrics_logic",
-#         virtual_cluster_id=virtual_cluster_id,
-#         execution_role_arn=JOB_ROLE_ARN,
-#         configuration_overrides=CONFIGURATION_OVERRIDES_ARG,
-#         release_label="emr-6.3.0-latest",
-#         job_driver=JOB_DRIVER_ARG,
-#         name="metrics_logic.py"
-#     )
+    analysis_job = EMRContainerOperator(
+        task_id="user_behavior_metrics_logic",
+        virtual_cluster_id=virtual_cluster_id,
+        execution_role_arn=JOB_ROLE_ARN,
+        configuration_overrides=CONFIGURATION_OVERRIDES_ARG,
+        release_label="emr-6.3.0-latest",
+        job_driver=JOB_DRIVER_ARG,
+        name="metrics_logic.py"
+    )
 
-#     [pg_to_staging, reviews_job] >> analysis_job
+    [pg_to_staging, reviews_job] >> analysis_job
