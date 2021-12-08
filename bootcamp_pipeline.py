@@ -112,7 +112,7 @@ with dag:
     # Save raw data to postgres from the user_purchase.csv file. Afterwards
     # the same data is extracted from postgres and sent to the staging layer
     # bucket created with terraform.
-    process_data = S3ToPostgresOperator(task_id='s3_to_postgres',
+    insert_to_db = S3ToPostgresOperator(task_id='s3_to_postgres',
                                         schema='debootcamp',
                                         table='products',
                                         s3_key='user_purchase.csv',
@@ -145,7 +145,7 @@ with dag:
     )
 
     # fan out after getting the names of the buckets created with terraform
-    get_bucket_names  >> pg_to_staging
+    get_bucket_names >> insert_to_db >> pg_to_staging
     reviews_job
 
     analysis_job = EMRContainerOperator(
