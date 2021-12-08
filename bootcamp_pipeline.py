@@ -151,7 +151,7 @@ with dag:
     analysis_job = EMRContainerOperator(
         task_id="user_behavior_metrics_logic",
         virtual_cluster_id=virtual_cluster_id,
-        execution_role_arn=JOB_ROLE_ARN,
+        execution_role_arn=ANALYSIS_JOB_ARG,
         configuration_overrides=CONFIGURATION_OVERRIDES_ARG,
         release_label="emr-6.3.0-latest",
         job_driver=JOB_DRIVER_ARG,
