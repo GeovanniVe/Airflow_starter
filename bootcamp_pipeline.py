@@ -22,7 +22,7 @@ from airflow.operators.python import PythonOperator
 
 # [START EMRContainer operator variables]
 virtual_cluster_id = '{{conn.aws_default.extra_dejson["virtual_cluster_id"]}}'
-JOB_ROLE_ARN = "arn:aws:iam::855157247171:role/EMRContainers-JobExecutionRole"
+JOB_ROLE_ARN = '{{conn.aws_default.extra_dejson["job_execution_role"]}}'
 spark_image = "855157247171.dkr.ecr.us-east-2.amazonaws.com/emr6.3_custom_repo"
 # [END EMRContainerOperator variables]
 
