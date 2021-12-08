@@ -39,9 +39,15 @@ JOB_DRIVER_ARG = {
 
 # create job parameters for second spark job which calculates the user behaviour
 # metrics logic
-ANALYSIS_JOB_ARG = JOB_DRIVER_ARG.copy()
-script_path = "s3://raw-layer20211122002502098100000004/metrics_logic.py"
-ANALYSIS_JOB_ARG["sparkSubmitJobDriver"]["entryPoint"] = script_path
+ANALYSIS_JOB_ARG = {
+    "sparkSubmitJobDriver": {
+        "entryPoint": "s3://raw-layer20211122002502098100000004/metrics_logic.py",
+        "sparkSubmitParameters": "--conf spark.executors.instances=2"
+                                 " --conf spark.executors.memory=2G"
+                                 " --conf spark.executor.cores=2"
+                                 " --conf spark.driver.cores=1"
+    }
+}
 
 CONFIGURATION_OVERRIDES_ARG = {
     "applicationConfiguration": [
