@@ -23,7 +23,7 @@ from airflow.operators.python import PythonOperator
 # [START EMRContainer operator variables]
 virtual_cluster_id = '{{conn.aws_default.extra_dejson["virtual_cluster_id"]}}'
 JOB_ROLE_ARN = '{{conn.aws_default.extra_dejson["job_execution_role"]}}'
-spark_image = "855157247171.dkr.ecr.us-east-2.amazonaws.com/emr6.3_custom_repo"
+spark_image = '{{conn.aws_default.extra_dejson["ecr_image"]}}'
 # [END EMRContainerOperator variables]
 
 # [START EMRContainerOperator config]
@@ -118,24 +118,24 @@ with dag:
     # Save raw data to postgres from the user_purchase.csv file. Afterwards
     # the same data is extracted from postgres and sent to the staging layer
     # bucket created with terraform.
-#     insert_to_db = S3ToPostgresOperator(task_id='s3_to_postgres',
-#                                         schema='debootcamp',
-#                                         table='products',
-#                                         s3_key='user_purchase.csv',
-#                                         postgres_conn_id='postgres_default',
-#                                         aws_conn_id='aws_default',
-#                                         dag=dag
-#                                         )
+    insert_to_db = S3ToPostgresOperator(task_id='s3_to_postgres',
+                                        schema='debootcamp',
+                                        table='products',
+                                        s3_key='user_purchase.csv',
+                                        postgres_conn_id='postgres_default',
+                                        aws_conn_id='aws_default',
+                                        dag=dag
+                                        )
 
-#     pg_to_staging = PostgresToS3Operator(task_id='postgres_to_staging_layer',
-#                                          schema='debootcamp',
-#                                          table='products',
-#                                          s3_bucket='de-bootcamp-airflow-data',
-#                                          s3_key='sample.csv',
-#                                          postgres_conn_id='postgres_default',
-#                                          aws_conn_id='aws_default',
-#                                          dag=dag
-#                                          )
+    pg_to_staging = PostgresToS3Operator(task_id='postgres_to_staging_layer',
+                                         schema='debootcamp',
+                                         table='products',
+                                         s3_bucket='de-bootcamp-airflow-data',
+                                         s3_key='sample.csv',
+                                         postgres_conn_id='postgres_default',
+                                         aws_conn_id='aws_default',
+                                         dag=dag
+                                         )
 
     # Classifies the movie_reviews.csv file by looking for the word "good".
     # Assigns a 1 if the word is found else a 0. Saves file with cid and
@@ -151,8 +151,8 @@ with dag:
     )
 
     # fan out after getting the names of the buckets created with terraform
-#     get_bucket_names >> insert_to_db >> pg_to_staging
-#     reviews_job
+    get_bucket_names >> insert_to_db >> pg_to_staging
+    reviews_job
 
     analysis_job = EMRContainerOperator(
         task_id="user_behavior_metrics_logic",
@@ -164,5 +164,4 @@ with dag:
         name="metrics_logic.py"
     )
 
-#     [pg_to_staging, reviews_job] >> analysis_job
-    reviews_job >> analysis_job
+    [pg_to_staging, reviews_job] >> analysis_job
