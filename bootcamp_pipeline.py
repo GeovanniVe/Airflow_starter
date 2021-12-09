@@ -30,9 +30,9 @@ spark_image = "855157247171.dkr.ecr.us-east-2.amazonaws.com/emr6.3_custom_repo"
 JOB_DRIVER_ARG = {
     "sparkSubmitJobDriver": {
         "entryPoint": "s3://raw-layer20211122002502098100000004/classify_reviews.py",
-        "sparkSubmitParameters": "--conf spark.executors.instances=2"
-                                 " --conf spark.executors.memory=2G"
-                                 " --conf spark.executor.cores=2"
+        "sparkSubmitParameters": "--conf spark.executors.instances=1"
+                                 " --conf spark.executors.memory=1G"
+                                 " --conf spark.executor.cores=1"
                                  " --conf spark.driver.cores=1"
     }
 }
@@ -42,9 +42,9 @@ JOB_DRIVER_ARG = {
 ANALYSIS_JOB_ARG = {
     "sparkSubmitJobDriver": {
         "entryPoint": "s3://raw-layer20211122002502098100000004/metrics_logic.py",
-        "sparkSubmitParameters": "--conf spark.executors.instances=2"
-                                 " --conf spark.executors.memory=2G"
-                                 " --conf spark.executor.cores=2"
+        "sparkSubmitParameters": "--conf spark.executors.instances=1"
+                                 " --conf spark.executors.memory=1G"
+                                 " --conf spark.executor.cores=1"
                                  " --conf spark.driver.cores=1"
     }
 }
